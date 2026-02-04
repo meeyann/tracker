@@ -1,0 +1,2700 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RE:ESG 그린영수증 · 7일/30일 실천 트래커 (Merged)</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary-green:#2D5F4F;
+      --light-green:#4A8B7A;
+      --accent-yellow:#E8C547;
+      --bg-cream:#F5F3ED;
+      --text-dark:#2C3E35;
+      --text-light:#7A8B82;
+      --white:#FFFFFF;
+      --danger:#c33;
+    }
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+      background:var(--bg-cream);
+      color:var(--text-dark);
+      line-height:1.6;
+    }
+    .container{max-width:640px;margin:0 auto;padding:18px;}
+    header{
+      background:linear-gradient(135deg,var(--primary-green) 0%, var(--light-green) 100%);
+      color:#fff;
+      padding:28px 18px;
+      text-align:center;
+      border-radius:0 0 30px 30px;
+      margin-bottom:22px;
+      position:sticky; top:0; z-index:5;
+    }
+    header h1{font-size:26px;margin-bottom:6px;letter-spacing:0.2px}
+    header p{font-size:13px;opacity:0.92}
+    .version-badge{
+      display:inline-block;
+      padding:4px 12px;
+      background:rgba(255,255,255,0.18);
+      border-radius:999px;
+      font-size:11px;
+      margin-top:10px;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:20px;
+      padding:22px;
+      margin-bottom:16px;
+      box-shadow:0 4px 15px rgba(45,95,79,0.08);
+    }
+    .card-title{
+      font-size:18px;
+      font-weight:800;
+      color:var(--primary-green);
+      margin-bottom:14px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .icon{font-size:22px}
+
+    /* Nav */
+    .nav-buttons{display:flex;gap:10px;margin-bottom:16px;}
+    .nav-btn{
+      flex:1;
+      padding:12px 10px;
+      border-radius:12px;
+      background:#fff;
+      border:2px solid var(--light-green);
+      color:var(--primary-green);
+      font-weight:800;
+      font-size:14px;
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+    .nav-btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(45,95,79,.10)}
+    .nav-btn.active{background:var(--primary-green);border-color:var(--primary-green);color:#fff}
+
+    /* Form inputs */
+    label.small{
+      display:block;
+      margin:6px 0 8px;
+      font-weight:800;
+      color:var(--text-dark);
+      font-size:13px;
+    }
+    input[type="text"], textarea{
+      width:100%;
+      padding:14px 14px;
+      border:2px solid var(--bg-cream);
+      border-radius:12px;
+      font-size:15px;
+      font-family:inherit;
+      background:var(--bg-cream);
+      color:var(--text-dark);
+      transition:all .2s ease;
+    }
+    textarea{min-height:110px;resize:vertical}
+    input[type="text"]:focus, textarea:focus{
+      outline:none;
+      border-color:var(--light-green);
+      background:#fff;
+    }
+
+    /* Emotion grid */
+    .emotion-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+    }
+    .emotion-chip{
+      aspect-ratio:1;
+      border:3px solid transparent;
+      border-radius:15px;
+      cursor:pointer;
+      transition:all .2s ease;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:10px;
+      background:var(--bg-cream);
+      user-select:none;
+    }
+    .emotion-chip:hover{transform:scale(1.04);box-shadow:0 6px 14px rgba(0,0,0,0.08)}
+    .emotion-chip.selected{border-color:var(--primary-green);background:rgba(74,139,122,0.12);transform:scale(1.04)}
+    .emotion-emoji{font-size:30px}
+    .emotion-label{font-size:11px;font-weight:700;color:var(--text-dark);text-align:center}
+
+    /* Color picker */
+    .color-picker{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:12px;
+    }
+    .color-chip{
+      aspect-ratio:1;
+      border-radius:50%;
+      cursor:pointer;
+      transition:all .2s ease;
+      border:4px solid transparent;
+      position:relative;
+    }
+    .color-chip:hover{transform:scale(1.08)}
+    .color-chip.selected{border-color:var(--primary-green);transform:scale(1.12)}
+    .color-chip.selected::after{
+      content:'✓';
+      position:absolute;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      color:#fff;
+      font-size:24px;
+      font-weight:900;
+      text-shadow:0 0 3px rgba(0,0,0,0.5);
+    }
+
+    /* Buttons */
+    .btn{
+      width:100%;
+      padding:15px 14px;
+      background:linear-gradient(135deg,var(--primary-green) 0%, var(--light-green) 100%);
+      color:#fff;
+      border:none;
+      border-radius:12px;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      transition:all .2s ease;
+      margin-top:10px;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(45,95,79,0.22)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+    .btn-secondary{
+      background:#fff;
+      color:var(--primary-green);
+      border:2px solid var(--primary-green);
+    }
+    .btn-secondary:hover{background:var(--bg-cream)}
+    .btn-export{
+      background:linear-gradient(135deg,var(--accent-yellow) 0%, #d4a944 100%);
+      color:var(--text-dark);
+    }
+    .btn-row{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;
+    }
+    .btn-row .btn{margin-top:0; flex:1; min-width: 160px;}
+    .btn-small{padding:12px 12px;font-size:14px;font-weight:900}
+
+    /* Stats */
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .stat-card{
+      background:linear-gradient(135deg, rgba(74,139,122,0.1) 0%, rgba(232,197,71,0.1) 100%);
+      padding:18px 10px;
+      border-radius:16px;
+      text-align:center;
+    }
+    .stat-number{font-size:26px;font-weight:900;color:var(--primary-green);margin-bottom:4px}
+    .stat-label{font-size:12px;color:var(--text-light);font-weight:700}
+
+    /* Practice list */
+    .practice-item{
+      background:#fff;
+      border-radius:16px;
+      padding:18px;
+      margin-bottom:12px;
+      border:2px solid transparent;
+      box-shadow:0 2px 10px rgba(45,95,79,0.06);
+    }
+    .practice-item:hover{border-color:rgba(74,139,122,0.35)}
+    .practice-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .practice-title{font-weight:900;color:var(--primary-green);font-size:16px;line-height:1.3}
+    .practice-date{font-size:12px;color:var(--text-light);margin-top:6px;font-weight:700}
+    .practice-meta{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:14px}
+    .color-dot{width:18px;height:18px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,0.08)}
+    .status-badge{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .status-pending{background:rgba(232,197,71,0.18);color:#8a7225}
+    .status-completed{background:rgba(74,139,122,0.18);color:var(--primary-green)}
+    .status-overdue{background:rgba(255,107,107,0.18);color:var(--danger)}
+
+    /* Receipt */
+    .green-receipt{
+      background:linear-gradient(135deg, #F8F9F5 0%, #E8F5E9 100%);
+      border:3px dashed var(--light-green);
+      border-radius:20px;
+      padding:22px;
+      margin-top:12px;
+    }
+    .receipt-header{
+      text-align:center;
+      border-bottom:2px dashed var(--light-green);
+      padding-bottom:12px;
+      margin-bottom:12px;
+    }
+    .receipt-title{font-size:18px;font-weight:900;color:var(--primary-green);margin-bottom:4px;letter-spacing:0.8px}
+    .receipt-subtitle{font-size:12px;color:var(--text-light);font-weight:700}
+    .receipt-item{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 0;
+      border-bottom:1px solid rgba(74,139,122,0.2);
+      align-items:flex-start;
+    }
+    .receipt-label{color:var(--text-light);font-size:13px;font-weight:800;min-width:84px}
+    .receipt-value{color:var(--primary-green);font-weight:900;font-size:13px;text-align:right;flex:1;word-break:break-word}
+    .receipt-footer{
+      text-align:center;
+      margin-top:16px;
+      padding-top:12px;
+      border-top:2px dashed var(--light-green);
+      color:var(--text-light);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    /* Timeline */
+    .timeline{position:relative;padding-left:28px;margin-top:18px}
+    .timeline::before{
+      content:'';
+      position:absolute;
+      left:10px; top:0; bottom:0;
+      width:3px;
+      background:linear-gradient(180deg,var(--light-green) 0%, var(--accent-yellow) 100%);
+      border-radius:3px;
+    }
+    .timeline-item{position:relative;margin-bottom:18px}
+    .timeline-dot{
+      position:absolute;
+      left:-25px; top:2px;
+      width:18px;height:18px;border-radius:50%;
+      background:#fff;border:3px solid var(--light-green);
+    }
+    .timeline-dot.completed{background:var(--light-green)}
+    .timeline-content{
+      background:#fff;
+      padding:12px 14px;
+      border-radius:14px;
+      box-shadow:0 2px 8px rgba(45,95,79,0.08);
+      border:1px solid rgba(74,139,122,0.12);
+    }
+    .countdown{
+      margin-top:10px;
+      background:linear-gradient(135deg, rgba(232,197,71,0.3) 0%, rgba(232,197,71,0.18) 100%);
+      border-radius:14px;
+      padding:14px 10px;
+      text-align:center;
+      border:1px dashed rgba(45,95,79,0.25);
+    }
+    .countdown-number{font-size:40px;font-weight:900;color:var(--primary-green);line-height:1}
+    .countdown-label{font-size:12px;color:var(--text-dark);font-weight:900;margin-top:6px}
+
+    /* Photo upload */
+    .photo-upload{
+      width:100%;
+      min-height:180px;
+      border:3px dashed var(--light-green);
+      border-radius:15px;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      transition:all .2s ease;
+      background:var(--bg-cream);
+      text-align:center;
+      padding:18px;
+    }
+    .photo-upload:hover{background:rgba(74,139,122,0.06);border-color:var(--primary-green)}
+    .photo-upload input{display:none}
+    .photo-preview{width:100%;border-radius:14px;margin-top:12px}
+    .photo-status{
+      text-align:center;
+      margin-top:10px;
+      border-radius:10px;
+      padding:10px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .photo-status.success{background:rgba(74,139,122,0.12);color:var(--primary-green)}
+    .photo-status.error{background:rgba(255,107,107,0.12);color:var(--danger)}
+
+    /* Share */
+    .share-section{
+      margin-top:14px;
+      padding:16px;
+      border-radius:16px;
+      border:2px dashed var(--light-green);
+      background:linear-gradient(135deg, rgba(74,139,122,0.06) 0%, rgba(232,197,71,0.06) 100%);
+    }
+    .share-title{font-size:14px;font-weight:900;color:var(--primary-green);text-align:center;margin-bottom:12px}
+    .share-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .share-btn{
+      background:#fff;
+      border:2px solid var(--light-green);
+      border-radius:12px;
+      padding:12px 8px;
+      cursor:pointer;
+      transition:all .2s ease;
+      display:flex; flex-direction:column; align-items:center; gap:6px;
+      color:var(--primary-green);
+      font-weight:900;
+      font-size:13px;
+      user-select:none;
+    }
+    .share-btn:hover{background:var(--light-green);color:#fff;transform:translateY(-2px);box-shadow:0 6px 16px rgba(74,139,122,0.18)}
+    .share-btn .icon{font-size:26px}
+
+    .hint{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--text-light);
+      text-align:center;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      bottom:18px;
+      left:50%;
+      transform:translateX(-50%);
+      background:var(--primary-green);
+      color:#fff;
+      padding:12px 16px;
+      border-radius:999px;
+      font-weight:900;
+      box-shadow:0 6px 18px rgba(0,0,0,0.18);
+      z-index:9999;
+      animation:slideUp .25s ease;
+      max-width:min(92vw, 520px);
+      text-align:center;
+    }
+    @keyframes slideUp{from{bottom:-40px;opacity:0}to{bottom:18px;opacity:1}}
+
+    .hidden{display:none!important}
+
+    /* Responsive */
+    @media (max-width: 640px){
+      .container{padding:14px}
+      header{border-radius:0 0 26px 26px}
+      header h1{font-size:24px}
+      .card{padding:18px}
+      .emotion-grid{grid-template-columns:repeat(3,1fr)}
+      .color-picker{grid-template-columns:repeat(5,1fr)}
+      .stats-grid{grid-template-columns:1fr}
+      .share-buttons{grid-template-columns:1fr}
+      .btn-row .btn{min-width: 0}
+    }
+  
+
+/* ===== v2.3 additions ===== */
+.receipt-stamp{
+  position:absolute;
+  right:18px;
+  top:16px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:2px solid rgba(232,197,71,0.8);
+  background:rgba(232,197,71,0.18);
+  color:#2D5F4F;
+  font-weight:1000;
+  font-size:12px;
+  letter-spacing:0.6px;
+}
+.receipt-header{ position:relative; }
+
+.mini-card-title{font-weight:1000;color:var(--primary-green);margin-bottom:6px;}
+.mini-card-msg{font-weight:800;color:var(--text-dark);font-size:13px;line-height:1.5;opacity:0.95;}
+
+.share-target{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 12px;
+  border-radius:14px;
+  background:rgba(74,139,122,0.08);
+  margin-top:10px;
+}
+.share-target-label{font-weight:1000;color:var(--primary-green);}
+.share-day-select{
+  padding:10px 12px;
+  border-radius:12px;
+  border:2px solid rgba(74,139,122,0.2);
+  font-weight:900;
+  outline:none;
+  background:#fff;
+}
+.qr-box{
+  margin-top:12px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(232,197,71,0.10);
+  border:2px dashed rgba(74,139,122,0.55);
+}
+.qr-title{font-weight:1000;margin-bottom:10px;color:var(--text-dark);}
+.qr-grid{
+  display:grid;
+  grid-template-columns: 180px 1fr;
+  gap:14px;
+  align-items:center;
+}
+.qr-img{
+  width:180px;height:180px;
+  border-radius:12px;
+  background:#fff;
+  border:2px solid rgba(74,139,122,0.2);
+}
+.qr-link{
+  font-size:12px;
+  color:var(--text-light);
+  font-weight:800;
+  word-break:break-all;
+  margin-bottom:10px;
+}
+.qr-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.qr-note{margin-top:8px;font-size:12px;color:var(--text-light);font-weight:800;}
+
+.lock-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:9999;
+}
+.lock-card{
+  width:min(420px, 100%);
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 18px 60px rgba(0,0,0,0.25);
+}
+.lock-title{font-size:20px;font-weight:1000;color:var(--primary-green);margin-bottom:6px;text-align:center;}
+.lock-desc{font-size:13px;font-weight:900;color:var(--text-light);margin-bottom:12px;text-align:center;}
+.lock-input{
+  width:100%;
+  padding:14px 14px;
+  border-radius:14px;
+  border:2px solid rgba(74,139,122,0.25);
+  font-size:18px;
+  font-weight:1000;
+  text-align:center;
+  letter-spacing:10px;
+  margin-bottom:12px;
+  outline:none;
+}
+.lock-error{margin-top:10px;color:var(--danger);font-weight:1000;text-align:center;}
+@media (max-width:520px){
+  .qr-grid{grid-template-columns:1fr;}
+  .qr-img{width:100%;height:auto;aspect-ratio:1/1;}
+}
+/* Print helpers */
+@media print{
+  header, .nav-buttons, .bottom-tabs, .btn, .share-section, .timeline, .hint, .toast { display:none !important; }
+  body{ background:#fff; }
+  .container{ max-width:100%; padding:0; }
+  .card{ box-shadow:none; border-radius:0; padding:0; }
+  .green-receipt{ margin:0; }
+}
+</style>
+</head>
+<body>
+<header>
+<h1>🌱 RE:ESG</h1>
+<p>감정·색·자연·실천을 기록하고, 그린영수증으로 남기는 7일/30일 트래커</p>
+<span class="version-badge">v2.3 merged (receipt + share + rituals)</span>
+</header>
+<div class="container">
+<!-- DASHBOARD -->
+<section id="dashboard">
+<div class="nav-buttons">
+<button class="nav-btn active" id="tabDashboard" onclick="UI.showDashboard()">📊 대시보드</button>
+<button class="nav-btn" id="tabSettings" onclick="UI.showSettings()">⚙️ 설정</button>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">📈</span>나의 실천 현황</div>
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-number" id="statTotal">0</div>
+<div class="stat-label">총 실천</div>
+</div>
+<div class="stat-card">
+<div class="stat-number" id="statDone">0</div>
+<div class="stat-label">완료</div>
+</div>
+<div class="stat-card">
+<div class="stat-number" id="statDoing">0</div>
+<div class="stat-label">진행중</div>
+</div>
+</div>
+<div class="btn-row" style="margin-top:14px;">
+<button class="btn btn-small" onclick="Flow.startNewPractice()">➕ 새로운 실천 시작</button>
+<button class="btn btn-export btn-small" onclick="Data.exportCSV()">📥 CSV 다운로드</button><button class="btn btn-export btn-small" onclick="Export.printAllReceipts()">📄 영수증 모음 PDF</button>
+</div>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">🌟</span>나의 실천 목록</div>
+<div id="practiceList">
+<p style="text-align:center;color:var(--text-light);padding:34px 10px;font-weight:800;">
+            아직 시작한 실천이 없어요.<br/>새로운 실천을 시작해보세요!
+          </p>
+</div>
+</div>
+</section>
+<!-- SETTINGS -->
+<section class="hidden" id="settings">
+<div class="nav-buttons">
+<button class="nav-btn" onclick="UI.showDashboard()">📊 대시보드</button>
+<button class="nav-btn active">⚙️ 설정</button>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">⚙️</span>설정</div>
+<div style="background:rgba(74,139,122,0.08);border-radius:14px;padding:14px;margin-bottom:12px;">
+<div style="font-weight:900;color:var(--primary-green);margin-bottom:6px;">공유 링크 방식</div>
+<div style="font-size:13px;color:var(--text-dark);font-weight:800;line-height:1.6;">
+            • <b>카카오 SDK 없이</b>도 공유되도록, 영수증 내용을 <b>링크에 포함</b>해 전송할 수 있게 만들었습니다.<br/>
+            • 받는 사람은 링크를 열면 <b>공유된 그린영수증 화면</b>을 바로 볼 수 있어요.
+          </div>
+</div>
+<div style="background:rgba(232,197,71,0.12);border-radius:14px;padding:14px;">
+<div style="font-weight:900;color:var(--text-dark);margin-bottom:6px;">데이터 저장</div>
+<div style="font-size:13px;color:var(--text-dark);font-weight:800;line-height:1.6;">
+            • 내 기록은 기본적으로 <b>이 브라우저(LocalStorage)</b>에 저장됩니다.<br/>
+            • 여러 기기 동기화가 필요하면, 추후 “로그인/서버 저장” 방식으로 확장하면 됩니다.
+          </div>
+</div>
+
+<div style="height:14px;"></div>
+<div style="background:rgba(45,95,79,0.06);border-radius:14px;padding:14px;margin-bottom:12px;">
+<div style="font-weight:900;color:var(--primary-green);margin-bottom:10px;">🔒 잠금 모드(PIN 4자리)</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;">
+<div style="font-size:13px;font-weight:800;color:var(--text-dark);line-height:1.5;">
+      브라우저를 함께 쓰는 환경에서 기록을 보호합니다.
+    </div>
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="lockEnabled" style="width:22px;height:22px;" type="checkbox"/>
+      사용
+    </label>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+<input id="pinNew" inputmode="numeric" maxlength="4" placeholder="새 PIN 4자리" style="padding:12px 14px;border-radius:14px;border:2px solid rgba(74,139,122,0.2);font-weight:900;outline:none;" type="password"/>
+<input id="pinConfirm" inputmode="numeric" maxlength="4" placeholder="PIN 확인" style="padding:12px 14px;border-radius:14px;border:2px solid rgba(74,139,122,0.2);font-weight:900;outline:none;" type="password"/>
+</div>
+<div class="btn-row" style="margin-top:0;">
+<button class="btn btn-small btn-secondary" onclick="Lock.applyFromSettings()">PIN 설정/변경</button>
+<button class="btn btn-small" onclick="Lock.lockNow()">지금 잠그기</button>
+</div>
+<div style="font-size:12px;color:var(--text-light);font-weight:800;margin-top:8px;">
+    • 공유 링크 화면(#share=...)은 수신자를 위해 잠금 없이 열립니다.
+  </div>
+</div>
+<div class="btn-row">
+<button class="btn btn-secondary btn-small" onclick="UI.showDashboard()">돌아가기</button>
+<button class="btn btn-small" onclick="Data.clearAll()">🧹 전체 기록 삭제</button>
+</div>
+</div>
+</section>
+<!-- DAY 0 FORM -->
+<section class="hidden" id="day0">
+<div class="card">
+<span class="status-badge status-pending">Day 0 - 실천 등록</span>
+<div class="card-title"><span class="icon">💚</span>오늘의 기분</div>
+<p style="margin-bottom:12px;color:var(--text-light);font-weight:800;">지금 마음에 가장 가까운 감정을 고르세요.</p>
+<div class="emotion-grid" id="emotionGrid"></div>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">🎨</span>기분의 색</div>
+<p style="margin-bottom:12px;color:var(--text-light);font-weight:800;">지금 기분을 색으로 표현한다면?</p>
+<div class="color-picker" id="colorPicker"></div>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">🌿</span>자연 관찰</div>
+<textarea id="inputNature" placeholder="예: 나무가 가지치기 되어 있었다. 그 모습이 내 마음을 정돈하게 했다."></textarea>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">✅</span>오늘의 작은 실천</div>
+<input id="inputAction" placeholder="예: 가까운 곳은 걸어가기, 일회용품 -1" type="text"/>
+</div>
+
+<div class="card">
+<div class="card-title"><span class="icon">🔁</span>시리즈(3회 루틴)로 묶기</div>
+<div style="display:flex;align-items:flex-start;gap:12px;">
+<input id="seriesToggle" style="width:22px;height:22px;margin-top:2px;" type="checkbox"/>
+<div style="flex:1;">
+<div style="font-weight:900;margin-bottom:6px;">같은 실천을 3번 기록해 ‘루틴 완성’ 배지를 만들어요.</div>
+<input id="seriesName" placeholder="시리즈 이름(선택) · 미입력 시 ‘실천 내용’이 자동 사용됩니다" style="width:100%;padding:12px 14px;border-radius:14px;border:2px solid rgba(74,139,122,0.2);font-weight:900;outline:none;" type="text"/>
+<div style="font-size:12px;color:var(--text-light);font-weight:800;margin-top:6px;">예: ‘가까운 곳 걷기’, ‘분리배출 정리’, ‘텀블러 챙기기’</div>
+</div>
+</div>
+</div>
+<button class="btn" onclick="Flow.completeDay0()">등록하고 그린영수증 받기 🧾</button>
+<button class="btn btn-secondary" onclick="UI.showDashboard()">취소</button>
+</section>
+<!-- DAY 0 COMPLETE (GREEN RECEIPT) -->
+<section class="hidden" id="day0Complete">
+<div class="card">
+<span class="status-badge status-completed">실천 등록 완료!</span>
+<div aria-label="GREEN RECEIPT" class="green-receipt" id="receiptWrap">
+<div class="receipt-header">
+<div class="receipt-title">GREEN RECEIPT</div>
+<div class="receipt-subtitle">오늘의 환경 실천</div>
+<div class="receipt-stamp" id="rStamp">START</div></div>
+<div class="receipt-item">
+<span class="receipt-label">나의 기분</span>
+<span class="receipt-value" id="rMood">-</span>
+</div>
+<div class="receipt-item">
+<span class="receipt-label">감정의 색</span>
+<span class="receipt-value" id="rColor">-</span>
+</div>
+<div class="receipt-item">
+<span class="receipt-label">자연 관찰</span>
+<span class="receipt-value" id="rNature">-</span>
+</div>
+<div class="receipt-item">
+<span class="receipt-label">실천 내용</span>
+<span class="receipt-value" id="rAction">-</span>
+</div><div class="receipt-item"><span class="receipt-label">시리즈</span><span class="receipt-value" id="rSeries">-</span></div><div class="receipt-item"><span class="receipt-label">오늘의 한 문장</span><span class="receipt-value" id="rQuote">-</span></div><div class="receipt-item"><span class="receipt-label">오늘 추천 카드</span><span class="receipt-value" id="rCard"><div class="mini-card-title" id="rCardTitle">-</div><div class="mini-card-msg" id="rCardMsg">-</div></span></div><div class="receipt-item"><span class="receipt-label">리추얼</span><span class="receipt-value" id="rRitual">-</span></div>
+<div class="receipt-item" style="border-bottom:none;">
+<span class="receipt-label">시작 날짜</span>
+<span class="receipt-value" id="rDate">-</span>
+</div>
+<div class="receipt-footer">#DailyEco #작은실천부터</div>
+</div>
+<div class="share-section">
+<div class="share-title">📤 영수증을 보내거나 저장해보세요</div>
+<div class="share-target">
+<div class="share-target-label">공유 대상</div>
+<select class="share-day-select" data-default="0" onchange="Share.refreshShareUI()">
+<option value="0">Day 0 · 시작</option>
+<option value="7">Day +7 · 인증</option>
+<option value="30">Day +30 · 완주</option>
+</select>
+</div>
+<div class="qr-box">
+<div class="qr-title">🔳 QR로 공유</div>
+<div class="qr-grid">
+<img alt="QR" class="qr-img"/>
+<div class="qr-meta">
+<div aria-label="share link" class="qr-link"></div>
+<div class="qr-actions">
+<button class="btn btn-secondary btn-small" onclick="Share.copyLink()">링크 복사</button>
+<button class="btn btn-export btn-small" onclick="Export.printReceipt()">PDF 저장/인쇄</button>
+</div>
+<div class="qr-note">QR은 선택한 Day 링크를 담습니다.</div>
+</div>
+</div>
+</div>
+
+<div class="share-buttons">
+<button class="share-btn" onclick="Share.shareReceipt('kakao')">
+<span class="icon">💬</span><span>카카오톡</span>
+</button>
+<button class="share-btn" onclick="Share.shareSMS()">
+<span class="icon">📱</span><span>문자</span>
+</button>
+<button class="share-btn" onclick="Share.copyLink()">
+<span class="icon">🔗</span><span>링크복사</span>
+</button>
+</div>
+<div class="hint">
+            휴대폰에서는 “카카오톡/기타 앱” 선택이 가능하고,<br/>
+            PC에서는 링크복사/이미지저장이 가장 안정적입니다.
+          </div>
+<div class="btn-row" style="margin-top:12px;">
+<button class="btn btn-export btn-small" onclick="Share.downloadReceiptImage()">🖼️ 영수증 이미지 저장</button>
+<button class="btn btn-small btn-small" onclick="Share.shareAsFile()">📎 이미지로 보내기</button>
+</div>
+</div>
+<div aria-label="timeline" class="timeline">
+<div class="timeline-item">
+<div class="timeline-dot completed"></div>
+<div class="timeline-content"><b>✅ Day 0</b> - 실천 시작</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-content">
+<b>📅 Day +7</b> - 첫 번째 인증
+              <div class="countdown">
+<div class="countdown-number" id="daysLeft7">7</div>
+<div class="countdown-label">일 후</div>
+</div>
+</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-content">
+<b>📅 Day +30</b> - 최종 인증
+              <div class="countdown">
+<div class="countdown-number" id="daysLeft30">30</div>
+<div class="countdown-label">일 후</div>
+</div>
+</div>
+</div>
+</div>
+<div class="btn-row">
+<button class="btn btn-small" onclick="UI.showDashboard()">대시보드로 돌아가기</button>
+<button class="btn btn-secondary btn-small" onclick="Flow.startNewPractice()">새로운 실천 시작</button>
+</div>
+</div>
+</section>
+<!-- DAY 7 VERIFY -->
+<section class="hidden" id="day7">
+<div class="card">
+<span class="status-badge status-pending">Day +7 - 첫 인증</span>
+<div class="card-title"><span class="icon">✅</span>7일 실천 체크</div>
+<div style="background:rgba(74,139,122,0.1);padding:14px;border-radius:14px;margin-bottom:14px;">
+<div style="font-weight:900;color:var(--primary-green);margin-bottom:6px;">나의 실천</div>
+<div id="verifyAction7" style="font-weight:900;color:var(--text-dark);">-</div>
+</div>
+<ul style="list-style:none;">
+<li class="practice-item" style="margin-bottom:10px;">
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="d7c1" style="width:20px;height:20px;" type="checkbox"/> 실천을 완료했나요?
+            </label>
+</li>
+<li class="practice-item" style="margin-bottom:10px;">
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="d7c2" style="width:20px;height:20px;" type="checkbox"/> 작은 변화를 느꼈나요?
+            </label>
+</li>
+<li class="practice-item">
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="d7c3" style="width:20px;height:20px;" type="checkbox"/> 계속하고 싶나요?
+            </label>
+</li>
+</ul>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">💬</span>변화 기록</div>
+<textarea id="d7Reflection" placeholder="7일 실천 후 변화/느낀 점을 적어주세요."></textarea>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">📸</span>인증 사진(선택)</div>
+<label class="photo-upload" for="photo7">
+<div>
+<div style="font-size:38px;margin-bottom:10px;">📷</div>
+<div style="color:var(--text-light);font-weight:900;">클릭하여 사진 업로드</div>
+</div>
+<input accept="image/*" id="photo7" onchange="UI.previewPhoto(event, 7)" type="file"/>
+</label>
+<img alt="day7 photo preview" class="photo-preview hidden" id="photoPreview7"/>
+</div>
+<button class="btn" onclick="Flow.completeDay7()">인증 완료하기 🎉</button>
+<button class="btn btn-secondary" onclick="UI.showDashboard()">취소</button>
+</section>
+<!-- DAY 7 COMPLETE -->
+<section class="hidden" id="day7Complete">
+<div class="card">
+<div style="text-align:center;padding:26px;border-radius:18px;background:linear-gradient(135deg,var(--primary-green) 0%, var(--light-green) 100%);color:#fff;">
+<div style="font-size:70px;margin-bottom:10px;">🌟</div>
+<div style="font-size:22px;font-weight:900;">7일 실천 완료!</div>
+<div style="margin-top:8px;font-size:13px;font-weight:800;opacity:0.92;">작은 실천이 큰 변화를 만듭니다</div>
+</div>
+<div class="share-section">
+<div class="share-title">🎊 7일 기록을 공유해보세요</div>
+<div class="share-target">
+<div class="share-target-label">공유 대상</div>
+<select class="share-day-select" data-default="7" onchange="Share.refreshShareUI()">
+<option value="0">Day 0 · 시작</option>
+<option value="7">Day +7 · 인증</option>
+<option value="30">Day +30 · 완주</option>
+</select>
+</div>
+<div class="qr-box">
+<div class="qr-title">🔳 QR로 공유</div>
+<div class="qr-grid">
+<img alt="QR" class="qr-img"/>
+<div class="qr-meta">
+<div aria-label="share link" class="qr-link"></div>
+<div class="qr-actions">
+<button class="btn btn-secondary btn-small" onclick="Share.copyLink()">링크 복사</button>
+<button class="btn btn-export btn-small" onclick="Export.printReceipt()">PDF 저장/인쇄</button>
+</div>
+<div class="qr-note">QR은 선택한 Day 링크를 담습니다.</div>
+</div>
+</div>
+</div>
+
+<div class="share-buttons">
+<button class="share-btn" onclick="Share.shareSummary(7)">
+<span class="icon">💬</span><span>카카오톡</span>
+</button>
+<button class="share-btn" onclick="Share.shareSMS(7)">
+<span class="icon">📱</span><span>문자</span>
+</button>
+<button class="share-btn" onclick="Share.copyLink(7)">
+<span class="icon">🔗</span><span>링크복사</span>
+</button>
+</div>
+<div class="btn-row" style="margin-top:12px;">
+<button class="btn btn-export btn-small" onclick="Share.downloadReceiptImage(7)">🖼️ 영수증 이미지 저장</button>
+<button class="btn btn-small btn-small" onclick="Share.shareAsFile(7)">📎 이미지로 보내기</button>
+</div>
+</div>
+<div style="margin-top:14px;background:rgba(74,139,122,0.08);padding:14px;border-radius:14px;font-weight:800;">
+          다음 단계: <b>Day +30</b> 최종 인증
+        </div>
+<div class="btn-row">
+<button class="btn btn-small" onclick="UI.showDashboard()">대시보드로 돌아가기</button>
+<button class="btn btn-secondary btn-small" onclick="Flow.startNewPractice()">새로운 실천 시작</button>
+</div>
+</div>
+</section>
+<!-- DAY 30 VERIFY -->
+<section class="hidden" id="day30">
+<div class="card">
+<span class="status-badge status-pending">Day +30 - 최종 인증</span>
+<div class="card-title"><span class="icon">🏆</span>30일 최종 체크</div>
+<div style="background:rgba(74,139,122,0.1);padding:14px;border-radius:14px;margin-bottom:14px;">
+<div style="font-weight:900;color:var(--primary-green);margin-bottom:6px;">나의 실천</div>
+<div id="verifyAction30" style="font-weight:900;color:var(--text-dark);">-</div>
+</div>
+<ul style="list-style:none;">
+<li class="practice-item" style="margin-bottom:10px;">
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="d30c1" style="width:20px;height:20px;" type="checkbox"/> 지속적으로 실천했나요?
+            </label>
+</li>
+<li class="practice-item" style="margin-bottom:10px;">
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="d30c2" style="width:20px;height:20px;" type="checkbox"/> 습관이 되었나요?
+            </label>
+</li>
+<li class="practice-item">
+<label style="display:flex;align-items:center;gap:10px;font-weight:900;">
+<input id="d30c3" style="width:20px;height:20px;" type="checkbox"/> 주변에 영향을 주었나요?
+            </label>
+</li>
+</ul>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">💭</span>한 달 후기</div>
+<textarea id="d30Reflection" placeholder="30일 실천을 돌아보며 변화/느낀 점을 적어주세요."></textarea>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">📸</span>현재 인증 사진(선택)</div>
+<label class="photo-upload" for="photo30">
+<div>
+<div style="font-size:38px;margin-bottom:10px;">📷</div>
+<div style="color:var(--text-light);font-weight:900;">클릭하여 사진 업로드</div>
+</div>
+<input accept="image/*" id="photo30" onchange="UI.previewPhoto(event, 30)" type="file"/>
+</label>
+<img alt="day30 photo preview" class="photo-preview hidden" id="photoPreview30"/>
+</div>
+<button class="btn" onclick="Flow.completeDay30()">최종 인증 완료하기 🎊</button>
+<button class="btn btn-secondary" onclick="UI.showDashboard()">취소</button>
+</section>
+<!-- DAY 30 COMPLETE -->
+<section class="hidden" id="day30Complete">
+<div class="card">
+<div style="text-align:center;padding:26px;border-radius:18px;background:linear-gradient(135deg,#FFD700 0%, #FFA500 100%);color:#663300;">
+<div style="font-size:70px;margin-bottom:10px;">🏆</div>
+<div style="font-size:22px;font-weight:900;">30일 완주!</div>
+<div style="margin-top:8px;font-size:13px;font-weight:900;">당신은 진짜 환경 실천가입니다</div>
+</div>
+<div class="share-section">
+<div class="share-title">🏆 30일 완주를 공유해보세요</div>
+<div class="share-target">
+<div class="share-target-label">공유 대상</div>
+<select class="share-day-select" data-default="30" onchange="Share.refreshShareUI()">
+<option value="0">Day 0 · 시작</option>
+<option value="7">Day +7 · 인증</option>
+<option value="30">Day +30 · 완주</option>
+</select>
+</div>
+<div class="qr-box">
+<div class="qr-title">🔳 QR로 공유</div>
+<div class="qr-grid">
+<img alt="QR" class="qr-img"/>
+<div class="qr-meta">
+<div aria-label="share link" class="qr-link"></div>
+<div class="qr-actions">
+<button class="btn btn-secondary btn-small" onclick="Share.copyLink()">링크 복사</button>
+<button class="btn btn-export btn-small" onclick="Export.printReceipt()">PDF 저장/인쇄</button>
+</div>
+<div class="qr-note">QR은 선택한 Day 링크를 담습니다.</div>
+</div>
+</div>
+</div>
+
+<div class="share-buttons">
+<button class="share-btn" onclick="Share.shareSummary(30)">
+<span class="icon">💬</span><span>카카오톡</span>
+</button>
+<button class="share-btn" onclick="Share.shareSMS(30)">
+<span class="icon">📱</span><span>문자</span>
+</button>
+<button class="share-btn" onclick="Share.copyLink(30)">
+<span class="icon">🔗</span><span>링크복사</span>
+</button>
+</div>
+<div class="btn-row" style="margin-top:12px;">
+<button class="btn btn-export btn-small" onclick="Share.downloadReceiptImage(30)">🖼️ 영수증 이미지 저장</button>
+<button class="btn btn-small btn-small" onclick="Share.shareAsFile(30)">📎 이미지로 보내기</button>
+</div>
+</div>
+<div class="btn-row">
+<button class="btn btn-small" onclick="UI.showDashboard()">대시보드로 돌아가기</button>
+<button class="btn btn-export btn-small" onclick="Data.exportCSV()">📥 CSV 다운로드</button>
+<button class="btn btn-secondary btn-small" onclick="Flow.startNewPractice()">새로운 실천 시작</button>
+</div>
+</div>
+</section>
+<!-- SHARE VIEWER -->
+<section class="hidden" id="shareView">
+<div class="card">
+<span class="status-badge status-completed">공유된 그린영수증</span>
+<div class="green-receipt" id="sharedReceiptWrap">
+<div class="receipt-header">
+<div class="receipt-title">GREEN RECEIPT</div>
+<div class="receipt-subtitle" id="srSubtitle">오늘의 환경 실천</div>
+<div class="receipt-stamp" id="srStamp">START</div></div>
+<div class="receipt-item">
+<span class="receipt-label">나의 기분</span>
+<span class="receipt-value" id="srMood">-</span>
+</div>
+<div class="receipt-item">
+<span class="receipt-label">감정의 색</span>
+<span class="receipt-value" id="srColor">-</span>
+</div>
+<div class="receipt-item">
+<span class="receipt-label">자연 관찰</span>
+<span class="receipt-value" id="srNature">-</span>
+</div>
+<div class="receipt-item">
+<span class="receipt-label">실천 내용</span>
+<span class="receipt-value" id="srAction">-</span>
+</div><div class="receipt-item"><span class="receipt-label">시리즈</span><span class="receipt-value" id="srSeries">-</span></div><div class="receipt-item"><span class="receipt-label">오늘의 한 문장</span><span class="receipt-value" id="srQuote">-</span></div><div class="receipt-item"><span class="receipt-label">오늘 추천 카드</span><span class="receipt-value" id="srCard"><div class="mini-card-title" id="srCardTitle">-</div><div class="mini-card-msg" id="srCardMsg">-</div></span></div><div class="receipt-item"><span class="receipt-label">리추얼</span><span class="receipt-value" id="srRitual">-</span></div>
+<div class="receipt-item" style="border-bottom:none;">
+<span class="receipt-label">시작 날짜</span>
+<span class="receipt-value" id="srDate">-</span>
+</div>
+<div class="receipt-footer">#DailyEco #작은실천부터</div>
+</div>
+<div class="share-section">
+<div class="share-title">📤 이 영수증을 다시 공유하기</div>
+<div class="share-buttons">
+<button class="share-btn" onclick="Share.shareShared()">
+<span class="icon">💬</span><span>카카오톡</span>
+</button>
+<button class="share-btn" onclick="Share.shareSharedSMS()">
+<span class="icon">📱</span><span>문자</span>
+</button>
+<button class="share-btn" onclick="Share.copySharedLink()">
+<span class="icon">🔗</span><span>링크복사</span>
+</button>
+</div>
+<div class="btn-row" style="margin-top:12px;">
+<button class="btn btn-export btn-small" onclick="Share.downloadSharedReceiptImage()">🖼️ 영수증 이미지 저장</button>
+<button class="btn btn-small btn-small" onclick="Share.shareSharedAsFile()">📎 이미지로 보내기</button>
+</div>
+</div>
+<button class="btn btn-secondary" onclick="UI.exitShareView()">내 트래커로 돌아가기</button>
+</div>
+</section>
+</div>
+<script>
+    // =========================
+    // Data model & storage
+    // =========================
+    const STORAGE_KEY = 're_esg_practices_v22';
+
+    const EMOTIONS = [
+      { emoji: '😊', label: '기쁨' },
+      { emoji: '😢', label: '슬픔' },
+      { emoji: '😠', label: '화남' },
+      { emoji: '😰', label: '불안' },
+      { emoji: '😌', label: '평온' },
+      { emoji: '😔', label: '우울' },
+      { emoji: '😤', label: '답답' },
+      { emoji: '🥰', label: '사랑' },
+      { emoji: '😴', label: '피곤' },
+      { emoji: '😎', label: '자신감' },
+      { emoji: '🤗', label: '감사' },
+      { emoji: '😱', label: '놀람' }
+    ];
+
+    const COLORS = [
+      { name: '빨강', hex: '#FF6B6B' },
+      { name: '주황', hex: '#FFA94D' },
+      { name: '노랑', hex: '#FFD43B' },
+      { name: '초록', hex: '#51CF66' },
+      { name: '파랑', hex: '#4DABF7' },
+      { name: '보라', hex: '#9775FA' },
+      { name: '분홍', hex: '#FF8AD3' },
+      { name: '갈색', hex: '#A0826D' },
+      { name: '회색', hex: '#ADB5BD' },
+      { name: '검정', hex: '#495057' },
+      { name: '하늘', hex: '#9FEDD7' },
+      { name: '연두', hex: '#D0F4DE' }
+    ];
+
+    const State = {
+      currentPractice: null,
+      selectedEmotion: null,
+      selectedColor: null,
+      sharedPayload: null
+    };
+
+    const Data = {
+      getAll(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : [];
+        }catch(e){
+          return [];
+        }
+      },
+      saveAll(list){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      },
+      upsert(practice){
+        const list = Data.getAll();
+        const idx = list.findIndex(p => p.id === practice.id);
+        if(idx >= 0) list[idx] = practice;
+        else list.push(practice);
+        Data.saveAll(list);
+      },
+      getById(id){
+        return Data.getAll().find(p => p.id === id) || null;
+      },
+      clearAll(){
+        const ok = confirm('전체 기록을 삭제할까요? (복구 불가)');
+        if(!ok) return;
+        localStorage.removeItem(STORAGE_KEY);
+        UI.toast('전체 기록을 삭제했습니다.');
+        UI.showDashboard();
+      },
+      exportCSV(){
+        const list = Data.getAll();
+        if(list.length === 0){
+          alert('저장된 실천이 없습니다.');
+          return;
+        }
+        const headers = ['id','시작일','실천내용','기분','기분이모지','색상명','색상HEX','자연관찰','Day+7완료','Day+30완료','상태'];
+        const rows = list.map(p => {
+          const start = new Date(p.startDate).toLocaleString('ko-KR');
+          const d7 = p.day7 ? '완료' : '미완료';
+          const d30 = p.day30 ? '완료' : '미완료';
+          const status = p.status === 'completed' ? '완료' : '진행중';
+          return [
+            p.id,
+            start,
+            csvSafe(p.action),
+            p.mood?.label || '',
+            p.mood?.emoji || '',
+            p.color?.name || '',
+            p.color?.hex || '',
+            csvSafe(p.nature || ''),
+            d7,
+            d30,
+            status
+          ].join(',');
+        });
+
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `RE_ESG_실천기록_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        UI.toast('CSV 파일을 다운로드했습니다.');
+      }
+    };
+
+    function csvSafe(text){
+      const s = (text ?? '').toString().replace(/"/g, '""');
+      return `"${s}"`;
+    }
+
+    // =========================
+    // UI & navigation
+    // =========================
+    const UI = {
+      screens: ['dashboard','settings','day0','day0Complete','day7','day7Complete','day30','day30Complete','shareView'],
+      show(screen){
+        UI.screens.forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.classList.add('hidden');
+        });
+        const target = document.getElementById(screen);
+        if(target) target.classList.remove('hidden');
+        window.scrollTo({top:0, behavior:'instant'});
+      },
+      setTab(active){
+        const d = document.getElementById('tabDashboard');
+        const s = document.getElementById('tabSettings');
+        if(d && s){
+          d.classList.toggle('active', active === 'dashboard');
+          s.classList.toggle('active', active === 'settings');
+        }
+      },
+      showDashboard(){
+        UI.setTab('dashboard');
+        UI.show('dashboard');
+        UI.renderDashboard();
+      },
+      showSettings(){
+        UI.setTab('settings');
+        UI.show('settings');
+      },
+      toast(message){
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = message;
+        document.body.appendChild(t);
+        setTimeout(()=>t.remove(), 2500);
+      },
+      renderEmotions(){
+        const grid = document.getElementById('emotionGrid');
+        grid.innerHTML = EMOTIONS.map((e, idx) => `
+          <div class="emotion-chip" data-idx="${idx}" onclick="Flow.selectEmotion(${idx})">
+            <div class="emotion-emoji">${e.emoji}</div>
+            <div class="emotion-label">${e.label}</div>
+          </div>
+        `).join('');
+      },
+      renderColors(){
+        const picker = document.getElementById('colorPicker');
+        picker.innerHTML = COLORS.map((c, idx) => `
+          <div class="color-chip" data-idx="${idx}" style="background:${c.hex}" onclick="Flow.selectColor(${idx})"></div>
+        `).join('');
+      },
+      renderDashboard(){
+        const list = Data.getAll().sort((a,b)=> new Date(b.startDate) - new Date(a.startDate));
+        const total = list.length;
+        const done = list.filter(p=>p.status==='completed').length;
+        const doing = list.filter(p=>p.status!=='completed').length;
+
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statDone').textContent = done;
+        document.getElementById('statDoing').textContent = doing;
+
+        const listDiv = document.getElementById('practiceList');
+        if(total === 0){
+          listDiv.innerHTML = `
+            <p style="text-align:center;color:var(--text-light);padding:34px 10px;font-weight:800;">
+              아직 시작한 실천이 없어요.<br/>새로운 실천을 시작해보세요!
+            </p>
+          `;
+          return;
+        }
+
+        listDiv.innerHTML = list.map(p => {
+          const start = new Date(p.startDate);
+          const day7 = addDays(start, 7);
+          const day30 = addDays(start, 30);
+          const now = new Date();
+
+          let statusText = '진행중';
+          let statusClass = 'status-pending';
+          let actionBtn = '';
+
+          const need7 = !p.day7 && now >= day7;
+          const need30 = p.day7 && !p.day30 && now >= day30;
+
+          if(p.status === 'completed'){
+            statusText = '완료';
+            statusClass = 'status-completed';
+          } else if(need7){
+            statusText = 'Day +7 인증 필요';
+            statusClass = 'status-overdue';
+            actionBtn = `<button class="btn btn-small" onclick="Flow.openVerify(${p.id}, 7)">Day +7 인증하기</button>`;
+          } else if(need30){
+            statusText = 'Day +30 인증 필요';
+            statusClass = 'status-overdue';
+            actionBtn = `<button class="btn btn-small" onclick="Flow.openVerify(${p.id}, 30)">Day +30 인증하기</button>`;
+          }
+
+          const mood = p.mood ? `${p.mood.emoji} ${p.mood.label}` : '-';
+          const colorDot = p.color?.hex ? `<span class="color-dot" style="background:${p.color.hex}"></span>` : '';
+          const colorName = p.color?.name ? p.color.name : '-';
+
+          return `
+            <div class="practice-item">
+              <div class="practice-header">
+                <div>
+                  <div class="practice-title">${escapeHtml(p.action || '')}</div>
+                  <div class="practice-date">시작일: ${start.toLocaleDateString('ko-KR')}</div>
+                </div>
+                <span class="status-badge ${statusClass}">${statusText}</span>
+              </div>
+              <div class="practice-meta">
+                <span>${mood}</span>
+                ${colorDot}
+                <span style="font-weight:900;">${colorName}</span>
+              </div>
+              <div class="btn-row" style="margin-top:12px;">
+                <button class="btn btn-secondary btn-small" onclick="Flow.showReceipt(${p.id})">🧾 영수증 보기</button>
+                <button class="btn btn-export btn-small" onclick="Share.copyLink(0, ${p.id})">🔗 영수증 링크</button>
+              </div>
+              ${actionBtn ? `<div style="margin-top:10px;">${actionBtn}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+      },
+      previewPhoto(evt, day){
+        const file = evt?.target?.files?.[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.getElementById(day === 7 ? 'photoPreview7' : 'photoPreview30');
+          img.src = e.target.result;
+          img.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      },
+      exitShareView(){
+        // remove hash
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+        State.sharedPayload = null;
+        UI.showDashboard();
+      }
+    };
+
+    function escapeHtml(s){
+      return (s ?? '').toString()
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function addDays(date, days){
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+    }
+
+    function daysLeft(targetDate){
+      const now = new Date();
+      const diff = targetDate - now;
+      return Math.max(0, Math.ceil(diff / (1000*60*60*24)));
+    }
+
+    // =========================
+    // Flow actions
+    // =========================
+    const Flow = {
+      startNewPractice(){
+        State.currentPractice = null;
+        State.selectedEmotion = null;
+        State.selectedColor = null;
+
+        document.getElementById('inputNature').value = '';
+        document.getElementById('inputAction').value = '';
+
+        document.querySelectorAll('.emotion-chip').forEach(x => x.classList.remove('selected'));
+        document.querySelectorAll('.color-chip').forEach(x => x.classList.remove('selected'));
+
+        UI.show('day0');
+      },
+      selectEmotion(idx){
+        State.selectedEmotion = EMOTIONS[idx];
+        document.querySelectorAll('.emotion-chip').forEach(x => x.classList.remove('selected'));
+        const el = document.querySelector(`.emotion-chip[data-idx="${idx}"]`);
+        if(el) el.classList.add('selected');
+      },
+      selectColor(idx){
+        State.selectedColor = COLORS[idx];
+        document.querySelectorAll('.color-chip').forEach(x => x.classList.remove('selected'));
+        const el = document.querySelector(`.color-chip[data-idx="${idx}"]`);
+        if(el) el.classList.add('selected');
+      },
+      completeDay0(){
+        if(!State.selectedEmotion){
+          alert('오늘의 기분(감정)을 선택해주세요!');
+          return;
+        }
+        if(!State.selectedColor){
+          alert('감정의 색을 선택해주세요!');
+          return;
+        }
+        const nature = document.getElementById('inputNature').value.trim();
+        const action = document.getElementById('inputAction').value.trim();
+        if(!nature || !action){
+          alert('자연 관찰과 실천 내용을 모두 입력해주세요!');
+          return;
+        }
+
+        const now = new Date();
+        const practice = {
+          id: Date.now(),
+          mood: State.selectedEmotion,
+          color: State.selectedColor,
+          nature,
+          action,
+          startDate: now.toISOString(),
+          day7: null,
+          day30: null,
+          status: 'in-progress'
+        };
+
+        Data.upsert(practice);
+        State.currentPractice = practice;
+
+        Flow.renderReceipt(practice);
+        Flow.updateCountdown(practice);
+
+        UI.toast('실천이 등록되었습니다! 그린영수증을 확인해보세요 🧾');
+        UI.show('day0Complete');
+      },
+      showReceipt(practiceId){
+        const p = Data.getById(practiceId);
+        if(!p){
+          alert('기록을 찾을 수 없습니다.');
+          return;
+        }
+        State.currentPractice = p;
+        Flow.renderReceipt(p);
+        Flow.updateCountdown(p);
+        UI.show('day0Complete');
+      },
+      renderReceipt(p){
+        document.getElementById('rMood').textContent = `${p.mood?.emoji || ''} ${p.mood?.label || ''}`.trim() || '-';
+        document.getElementById('rColor').innerHTML = p.color
+          ? `<span class="color-dot" style="background:${p.color.hex};vertical-align:middle;margin-right:6px;"></span>${p.color.name} (${p.color.hex})`
+          : '-';
+        document.getElementById('rNature').textContent = p.nature || '-';
+        document.getElementById('rAction').textContent = p.action || '-';
+        document.getElementById('rDate').textContent = new Date(p.startDate).toLocaleDateString('ko-KR');
+      },
+      updateCountdown(p){
+        const start = new Date(p.startDate);
+        const d7 = addDays(start, 7);
+        const d30 = addDays(start, 30);
+        const left7 = daysLeft(d7);
+        const left30 = daysLeft(d30);
+        const e7 = document.getElementById('daysLeft7');
+        const e30 = document.getElementById('daysLeft30');
+        if(e7) e7.textContent = left7;
+        if(e30) e30.textContent = left30;
+      },
+      openVerify(practiceId, day){
+        const p = Data.getById(practiceId);
+        if(!p){
+          alert('실천을 찾을 수 없습니다.');
+          return;
+        }
+        State.currentPractice = p;
+        if(day === 7){
+          document.getElementById('verifyAction7').textContent = p.action;
+          document.getElementById('d7c1').checked = false;
+          document.getElementById('d7c2').checked = false;
+          document.getElementById('d7c3').checked = false;
+          document.getElementById('d7Reflection').value = '';
+          document.getElementById('photo7').value = '';
+          const img = document.getElementById('photoPreview7');
+          img.classList.add('hidden'); img.src = '';
+          UI.show('day7');
+        }else if(day === 30){
+          document.getElementById('verifyAction30').textContent = p.action;
+          document.getElementById('d30c1').checked = false;
+          document.getElementById('d30c2').checked = false;
+          document.getElementById('d30c3').checked = false;
+          document.getElementById('d30Reflection').value = '';
+          document.getElementById('photo30').value = '';
+          const img = document.getElementById('photoPreview30');
+          img.classList.add('hidden'); img.src = '';
+          UI.show('day30');
+        }
+      },
+      completeDay7(){
+        const p = State.currentPractice;
+        if(!p){ alert('실천을 선택해주세요.'); UI.showDashboard(); return; }
+
+        const c1 = document.getElementById('d7c1').checked;
+        const c2 = document.getElementById('d7c2').checked;
+        const c3 = document.getElementById('d7c3').checked;
+        const reflection = document.getElementById('d7Reflection').value.trim();
+
+        if(!c1 || !c2 || !c3){
+          alert('모든 체크 항목을 확인해주세요!');
+          return;
+        }
+        if(!reflection){
+          alert('변화 기록을 작성해주세요!');
+          return;
+        }
+
+        const photoFile = document.getElementById('photo7').files?.[0] || null;
+
+        if(photoFile){
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            p.day7 = { date: new Date().toISOString(), reflection, photo: e.target.result };
+            Data.upsert(p);
+            State.currentPractice = p;
+            UI.show('day7Complete');
+          };
+          reader.readAsDataURL(photoFile);
+        }else{
+          p.day7 = { date: new Date().toISOString(), reflection, photo: null };
+          Data.upsert(p);
+          State.currentPractice = p;
+          UI.show('day7Complete');
+        }
+      },
+      completeDay30(){
+        const p = State.currentPractice;
+        if(!p){ alert('실천을 선택해주세요.'); UI.showDashboard(); return; }
+
+        const c1 = document.getElementById('d30c1').checked;
+        const c2 = document.getElementById('d30c2').checked;
+        const c3 = document.getElementById('d30c3').checked;
+        const reflection = document.getElementById('d30Reflection').value.trim();
+
+        if(!c1 || !c2 || !c3){
+          alert('모든 체크 항목을 확인해주세요!');
+          return;
+        }
+        if(!reflection){
+          alert('한 달 후기를 작성해주세요!');
+          return;
+        }
+
+        const photoFile = document.getElementById('photo30').files?.[0] || null;
+
+        const finalize = (photoData) => {
+          p.day30 = { date: new Date().toISOString(), reflection, photo: photoData || null };
+          p.status = 'completed';
+          Data.upsert(p);
+          State.currentPractice = p;
+          UI.show('day30Complete');
+        };
+
+        if(photoFile){
+          const reader = new FileReader();
+          reader.onload = (e) => finalize(e.target.result);
+          reader.readAsDataURL(photoFile);
+        }else{
+          finalize(null);
+        }
+      }
+    };
+
+    // =========================
+    // Share link (no SNS SDK)
+    // =========================
+    const Share = {
+      // Build a shareable URL that includes the receipt payload in the hash.
+      buildShareLink(practice, day=0){
+        const payload = Share.makePayload(practice, day);
+        const encoded = encodePayload(payload);
+        const base = window.location.origin && window.location.origin !== 'null'
+          ? (window.location.origin + window.location.pathname)
+          : window.location.href.split('#')[0]; // file:// fallback
+        return base + '#share=' + encoded;
+      },
+      makePayload(practice, day=0){
+        return {
+          v: 1,
+          day: day, // 0/7/30
+          startDate: practice.startDate,
+          mood: practice.mood,
+          color: practice.color,
+          nature: practice.nature,
+          action: practice.action,
+          // optional extras
+          day7: practice.day7 ? { date: practice.day7.date } : null,
+          day30: practice.day30 ? { date: practice.day30.date } : null
+        };
+      },
+      getShareText(day=0){
+        const p = State.currentPractice;
+        const tag = day === 7 ? '7일 인증' : (day === 30 ? '30일 완주' : '오늘의 실천');
+        return `🌱 RE:ESG ${tag}\n\n실천: "${p?.action || ''}"\n기분: ${p?.mood?.emoji || ''} ${p?.mood?.label || ''}\n\n그린영수증 보기: `;
+      },
+      shareReceipt(){
+        const p = State.currentPractice;
+        if(!p){ UI.toast('공유할 기록이 없습니다.'); return; }
+        const link = Share.buildShareLink(p, 0);
+        const text = Share.getShareText(0) + link;
+        Share.nativeShare({ title: 'RE:ESG 그린영수증', text, url: link });
+      },
+      shareSummary(day){
+        const p = State.currentPractice;
+        if(!p){ UI.toast('공유할 기록이 없습니다.'); return; }
+        const link = Share.buildShareLink(p, day);
+        const tag = day === 7 ? '🌟 7일 실천 완료' : '🏆 30일 완주';
+        const text = `RE:ESG ${tag}\n\n실천: "${p.action}"\n기분: ${p.mood.emoji} ${p.mood.label}\n\n그린영수증 보기: ${link}`;
+        Share.nativeShare({ title: `RE:ESG ${tag}`, text, url: link });
+      },
+      copyLink(day=0, practiceId=null){
+        const p = practiceId ? Data.getById(practiceId) : State.currentPractice;
+        if(!p){ UI.toast('링크를 만들 기록이 없습니다.'); return; }
+        const link = Share.buildShareLink(p, day);
+        copyText(link);
+      },
+      shareSMS(day=0){
+        const p = State.currentPractice;
+        if(!p){ UI.toast('공유할 기록이 없습니다.'); return; }
+        const link = Share.buildShareLink(p, day);
+        const tag = day === 7 ? '7일 실천 완료' : (day === 30 ? '30일 완주' : '오늘의 실천');
+        const msg = `🌱 RE:ESG ${tag}\n\n"${p.action}"\n기분: ${p.mood.emoji} ${p.mood.label}\n\n그린영수증 링크:\n${link}`;
+        const url = `sms:?body=${encodeURIComponent(msg)}`;
+        window.location.href = url;
+      },
+      // Web Share API (no SDK)
+      async nativeShare({title, text, url, files}){
+        if(navigator.share){
+          try{
+            if(files && navigator.canShare && navigator.canShare({ files })){
+              await navigator.share({ title, text, url, files });
+            }else{
+              await navigator.share({ title, text, url });
+            }
+            UI.toast('공유 화면을 열었습니다.');
+            return;
+          }catch(e){
+            // user cancelled or failed -> fallback
+          }
+        }
+        // fallback: copy link
+        if(url) copyText(url);
+        else UI.toast('공유가 지원되지 않아 링크를 복사했습니다.');
+      },
+
+      // ========== Receipt image ==========
+      async downloadReceiptImage(day=0){
+        const p = State.currentPractice;
+        if(!p){ UI.toast('저장할 기록이 없습니다.'); return; }
+        const canvas = await renderReceiptToCanvas(Share.makePayload(p, day));
+        canvas.toBlob((blob)=>{
+          if(!blob){ UI.toast('이미지 생성 실패'); return; }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `RE_ESG_GREEN_RECEIPT_D${day}_${new Date().toISOString().slice(0,10)}.png`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(()=>URL.revokeObjectURL(url), 3000);
+          UI.toast('영수증 이미지를 저장했습니다.');
+        }, 'image/png');
+      },
+      async shareAsFile(day=0){
+        const p = State.currentPractice;
+        if(!p){ UI.toast('보낼 기록이 없습니다.'); return; }
+        const canvas = await renderReceiptToCanvas(Share.makePayload(p, day));
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        if(!blob){ UI.toast('이미지 생성 실패'); return; }
+        const file = new File([blob], `RE_ESG_GREEN_RECEIPT_D${day}.png`, { type: 'image/png' });
+        const link = Share.buildShareLink(p, day);
+        const tag = day === 7 ? '🌟 7일 실천 완료' : (day === 30 ? '🏆 30일 완주' : '🧾 그린영수증');
+        const text = `${tag}\n실천: "${p.action}"\n기분: ${p.mood.emoji} ${p.mood.label}\n링크: ${link}`;
+        await Share.nativeShare({ title: 'RE:ESG 그린영수증', text, url: link, files: [file] });
+      },
+
+      // ========== Share viewer helpers ==========
+      shareShared(){
+        const url = window.location.href;
+        const text = `🌱 RE:ESG 공유된 그린영수증\n\n링크: ${url}`;
+        Share.nativeShare({ title: 'RE:ESG 그린영수증', text, url });
+      },
+      shareSharedSMS(){
+        const url = window.location.href;
+        const msg = `🌱 RE:ESG 공유된 그린영수증\n\n링크:\n${url}`;
+        window.location.href = `sms:?body=${encodeURIComponent(msg)}`;
+      },
+      copySharedLink(){
+        copyText(window.location.href);
+      },
+      async downloadSharedReceiptImage(){
+        if(!State.sharedPayload){ UI.toast('공유 데이터가 없습니다.'); return; }
+        const canvas = await renderReceiptToCanvas(State.sharedPayload);
+        canvas.toBlob((blob)=>{
+          if(!blob){ UI.toast('이미지 생성 실패'); return; }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `RE_ESG_SHARED_GREEN_RECEIPT_${new Date().toISOString().slice(0,10)}.png`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(()=>URL.revokeObjectURL(url), 3000);
+          UI.toast('영수증 이미지를 저장했습니다.');
+        }, 'image/png');
+      },
+      async shareSharedAsFile(){
+        if(!State.sharedPayload){ UI.toast('공유 데이터가 없습니다.'); return; }
+        const canvas = await renderReceiptToCanvas(State.sharedPayload);
+        const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+        const file = new File([blob], 'RE_ESG_SHARED_GREEN_RECEIPT.png', { type: 'image/png' });
+        const url = window.location.href;
+        const text = `🌱 RE:ESG 공유된 그린영수증\n\n링크: ${url}`;
+        await Share.nativeShare({ title: 'RE:ESG 그린영수증', text, url, files:[file] });
+      }
+    };
+
+    function copyText(text){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(()=>{
+          UI.toast('링크를 복사했습니다 📋');
+        }).catch(()=>fallbackCopy(text));
+      }else{
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position='fixed';
+      ta.style.left='-999999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try{
+        document.execCommand('copy');
+        UI.toast('링크를 복사했습니다 📋');
+      }catch(e){
+        alert('복사 실패: ' + text);
+      }
+      ta.remove();
+    }
+
+    // =========================
+    // Encode/Decode share payload
+    // =========================
+    function encodePayload(obj){
+      const json = JSON.stringify(obj);
+      // base64url
+      const b64 = btoa(unescape(encodeURIComponent(json)))
+        .replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
+      return b64;
+    }
+
+    function decodePayload(b64url){
+      const b64 = b64url.replaceAll('-','+').replaceAll('_','/');
+      // pad
+      const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4));
+      const json = decodeURIComponent(escape(atob(b64 + pad)));
+      return JSON.parse(json);
+    }
+
+    function maybeOpenShareView(){
+      const hash = window.location.hash || '';
+      if(!hash.startsWith('#share=')) return false;
+      const token = hash.slice('#share='.length);
+      try{
+        const payload = decodePayload(token);
+        State.sharedPayload = payload;
+        renderSharedReceipt(payload);
+        UI.show('shareView');
+        return true;
+      }catch(e){
+        // invalid payload
+        return false;
+      }
+    }
+
+    function renderSharedReceipt(payload){
+      const day = payload.day || 0;
+      const subtitle = day === 7 ? 'Day +7 인증' : (day === 30 ? 'Day +30 최종 인증' : '오늘의 환경 실천');
+      document.getElementById('srSubtitle').textContent = subtitle;
+
+      const mood = payload.mood ? `${payload.mood.emoji || ''} ${payload.mood.label || ''}`.trim() : '-';
+      const color = payload.color
+        ? `${payload.color.name} (${payload.color.hex})`
+        : '-';
+
+      document.getElementById('srMood').textContent = mood || '-';
+      document.getElementById('srColor').innerHTML = payload.color
+        ? `<span class="color-dot" style="background:${payload.color.hex};vertical-align:middle;margin-right:6px;"></span>${payload.color.name} (${payload.color.hex})`
+        : '-';
+      document.getElementById('srNature').textContent = payload.nature || '-';
+      document.getElementById('srAction').textContent = payload.action || '-';
+      document.getElementById('srDate').textContent = payload.startDate ? new Date(payload.startDate).toLocaleDateString('ko-KR') : '-';
+    }
+
+    // =========================
+    // Receipt to Canvas (image)
+    // =========================
+    async function renderReceiptToCanvas(payload){
+      // Simple clean receipt rendering (no external libs)
+      const W = 1080, H = 1400;
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = '#F8F9F5';
+      ctx.fillRect(0,0,W,H);
+
+      // Soft gradient
+      const grad = ctx.createLinearGradient(0,0,W,H);
+      grad.addColorStop(0, '#F8F9F5');
+      grad.addColorStop(1, '#E8F5E9');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,W,H);
+
+      // Border dashed
+      const margin = 70;
+      const rx = 40;
+      const x = margin, y = margin, w = W - margin*2, h = H - margin*2;
+      ctx.save();
+      ctx.lineWidth = 8;
+      ctx.setLineDash([18, 14]);
+      ctx.strokeStyle = '#4A8B7A';
+      roundRect(ctx, x, y, w, h, rx);
+      ctx.stroke();
+      ctx.restore();
+
+      // Header
+      ctx.fillStyle = '#2D5F4F';
+      ctx.font = '900 54px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('GREEN RECEIPT', W/2, y + 120);
+
+      ctx.fillStyle = '#7A8B82';
+      ctx.font = '700 28px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif';
+      const subtitle = payload.day === 7 ? 'Day +7 인증' : (payload.day === 30 ? 'Day +30 최종 인증' : '오늘의 환경 실천');
+      ctx.fillText(subtitle, W/2, y + 170);
+
+      // Divider (dashed)
+      ctx.save();
+      ctx.setLineDash([14, 10]);
+      ctx.strokeStyle = '#4A8B7A';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x + 40, y + 210);
+      ctx.lineTo(x + w - 40, y + 210);
+      ctx.stroke();
+      ctx.restore();
+
+      // Content lines
+      const leftX = x + 60;
+      const rightX = x + w - 60;
+      let curY = y + 290;
+
+      const rows = [
+        ['나의 기분', payload.mood ? `${payload.mood.emoji || ''} ${payload.mood.label || ''}`.trim() : '-'],
+        ['감정의 색', payload.color ? `${payload.color.name} (${payload.color.hex})` : '-'],
+        ['자연 관찰', payload.nature || '-'],
+        ['실천 내용', payload.action || '-'],
+        ['시작 날짜', payload.startDate ? new Date(payload.startDate).toLocaleDateString('ko-KR') : '-']
+      ];
+
+      const labelStyle = '#7A8B82';
+      const valueStyle = '#2D5F4F';
+      ctx.textAlign = 'left';
+
+      for(let i=0;i<rows.length;i++){
+        const [label, value] = rows[i];
+
+        // separator
+        if(i>0){
+          ctx.save();
+          ctx.strokeStyle = 'rgba(74,139,122,0.25)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x + 40, curY - 40);
+          ctx.lineTo(x + w - 40, curY - 40);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // label
+        ctx.fillStyle = labelStyle;
+        ctx.font = '800 30px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif';
+        ctx.fillText(label, leftX, curY);
+
+        // value (wrap)
+        ctx.fillStyle = valueStyle;
+        ctx.font = '900 30px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif';
+        const maxWidth = rightX - (leftX + 220);
+        const startX = leftX + 220;
+
+        const lines = wrapText(ctx, value, maxWidth);
+        lines.forEach((line, idx) => {
+          ctx.textAlign = 'right';
+          ctx.fillText(line, rightX, curY + idx*40);
+        });
+        ctx.textAlign = 'left';
+
+        curY += Math.max(70, lines.length*40 + 30);
+      }
+
+      // Footer divider
+      ctx.save();
+      ctx.setLineDash([14,10]);
+      ctx.strokeStyle = '#4A8B7A';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x + 40, y + h - 170);
+      ctx.lineTo(x + w - 40, y + h - 170);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = '#7A8B82';
+      ctx.font = '800 28px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('#DailyEco #작은실천부터', W/2, y + h - 110);
+
+      // small brand
+      ctx.fillStyle = 'rgba(45,95,79,0.65)';
+      ctx.font = '800 24px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif';
+      ctx.fillText('RE:ESG', W/2, y + h - 70);
+
+      // Color accent dot (selected color)
+      if(payload.color?.hex){
+        ctx.save();
+        ctx.fillStyle = payload.color.hex;
+        ctx.beginPath();
+        ctx.arc(rightX - 40, y + 120, 18, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      return canvas;
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      const radius = Math.min(r, w/2, h/2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, maxWidth){
+      const t = (text ?? '').toString();
+      if(!t) return ['-'];
+
+      // preserve newlines by splitting
+      const parts = t.split(/\n+/);
+      const lines = [];
+      for(const part of parts){
+        const words = part.split(' ');
+        let line = '';
+        for(const w of words){
+          const test = line ? (line + ' ' + w) : w;
+          if(ctx.measureText(test).width <= maxWidth){
+            line = test;
+          }else{
+            if(line) lines.push(line);
+            // if single word too long, hard cut
+            if(ctx.measureText(w).width > maxWidth){
+              lines.push(...hardCut(ctx, w, maxWidth));
+              line = '';
+            }else{
+              line = w;
+            }
+          }
+        }
+        if(line) lines.push(line);
+      }
+      // limit lines to avoid overrun; add ellipsis
+      const maxLines = 7;
+      if(lines.length > maxLines){
+        const clipped = lines.slice(0, maxLines);
+        clipped[maxLines-1] = clipped[maxLines-1].replace(/\s+$/,'') + '…';
+        return clipped;
+      }
+      return lines;
+    }
+
+    function hardCut(ctx, word, maxWidth){
+      const chars = [...word];
+      const out = [];
+      let buf = '';
+      for(const ch of chars){
+        const test = buf + ch;
+        if(ctx.measureText(test).width <= maxWidth){
+          buf = test;
+        }else{
+          if(buf) out.push(buf);
+          buf = ch;
+        }
+      }
+      if(buf) out.push(buf);
+      return out;
+    }
+
+    // =========================
+    // Boot
+    // =========================
+    function init(){
+      UI.renderEmotions();
+      UI.renderColors();
+
+      // If opened from a share link, show share viewer.
+      if(maybeOpenShareView()) return;
+
+      // Otherwise default to dashboard.
+      UI.showDashboard();
+    }
+
+    window.addEventListener('hashchange', () => {
+      // Allow opening share view even after page already loaded
+      if(maybeOpenShareView()) return;
+    });
+
+    window.addEventListener('DOMContentLoaded', init);
+  
+
+
+// =========================
+// v2.3 Patch: Quote / Card / Series / QR(select day) / PDF(Print) / PIN lock
+// =========================
+(function(){
+  // ---- tiny hash (FNV-1a) for deterministic picks
+  function fnv1a(str){
+    let h = 0x811c9dc5;
+    for(let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = (h + ((h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24))) >>> 0;
+    }
+    return h >>> 0;
+  }
+  function clampText(s, n){
+    if(!s) return '';
+    s = String(s);
+    return s.length > n ? (s.slice(0,n-1) + '…') : s;
+  }
+  function safeDay(n){
+    n = Number(n);
+    return (n===7||n===30)?n:0;
+  }
+
+  // ---- Quote templates (short, share-friendly)
+  const QUOTES = [
+    "나는 오늘, 작은 선택으로 숨 쉴 틈을 만들었다.",
+    "작은 실천은 내 마음과 지구를 동시에 정돈한다.",
+    "오늘의 한 걸음이 내일의 습관이 된다.",
+    "완벽함보다 지속. 오늘도 충분하다.",
+    "지금의 선택이 미래의 나를 만든다.",
+    "나를 돌보는 방식으로 지구를 돌본다.",
+    "작은 변화가 큰 흐름을 만든다.",
+    "오늘의 실천은 나에게 보내는 선물이다.",
+    "천천히, 그러나 분명하게.",
+    "나는 오늘, 나와 자연을 다시 연결했다."
+  ];
+
+  // ---- Prototype card suggestions (RE:ESG 카드 연동 전 단계)
+  const CARDS = [
+    {title:"숨 고르기", msg:"지금 내 호흡을 3번만 알아차려요. 마음이 먼저 정리되면 실천이 쉬워져요.", moods:["불안","답답","화남"]},
+    {title:"따뜻한 시선", msg:"오늘 자연에서 ‘살아있음’을 하나만 찾아 적어봐요. 작은 감각이 관계를 회복시켜요.", moods:["우울","슬픔","피곤"]},
+    {title:"가벼운 시작", msg:"가장 작은 단계로 쪼개서 1분만 해봐요. 시작이 곧 성공이에요.", moods:["피곤","답답"]},
+    {title:"흐름 타기", msg:"오늘 잘 흘러간 순간을 기록해요. 그 흐름을 내일도 이어갈 수 있어요.", moods:["기쁨","평온","사랑"]},
+    {title:"경계 세우기", msg:"하지 않을 것 한 가지를 정해요. ‘덜 하기’도 큰 실천이에요.", moods:["화남","답답","불안"]},
+    {title:"정리의 힘", msg:"눈에 보이는 곳 한 군데를 정돈해요. 정돈은 마음의 안정을 부른다.", moods:["불안","우울","피곤"]},
+    {title:"연결의 증거", msg:"오늘 누군가에게 고마움을 한 문장으로 보내요. 연결은 회복의 시작이에요.", moods:["슬픔","사랑","평온"]},
+    {title:"기록의 씨앗", msg:"오늘의 변화(아주 작아도)를 한 줄로 남겨요. 씨앗이 자랍니다.", moods:["기쁨","평온","답답","우울"]},
+  ];
+
+  function pickQuote(practice){
+    const base = `${practice.id}|${practice.action||''}|${practice.nature||''}`;
+    const idx = fnv1a(base) % QUOTES.length;
+    return QUOTES[idx];
+  }
+  function pickCard(practice){
+    const mood = practice.mood?.label || '';
+    const pool = CARDS.filter(c => !c.moods || c.moods.includes(mood));
+    const list = pool.length ? pool : CARDS;
+    const base = `${practice.id}|${mood}|${practice.color?.hex||''}`;
+    const idx = fnv1a(base) % list.length;
+    const c = list[idx];
+    return { title: c.title, msg: c.msg };
+  }
+
+  // ---- Series progress (3 times)
+  function getSeriesStatus(p){
+    if(!p || !p.series || !p.series.enabled) return null;
+    const name = (p.series.name || p.action || '').trim();
+    if(!name) return null;
+    const all = Data.getAll().filter(x => x.series && x.series.enabled && ((x.series.name||x.action||'').trim()===name))
+      .sort((a,b)=> new Date(a.startDate) - new Date(b.startDate));
+    const idx = all.findIndex(x => x.id === p.id);
+    const pos = idx>=0 ? (idx+1) : all.length;
+    const done = all.length >= 3;
+    return { name, count: all.length, pos, done };
+  }
+
+  // ---- Selected day (based on visible section select)
+  Share.peekSelectedDay = function(){
+    const visible = document.querySelector("section:not(.hidden) .share-day-select");
+    if(!visible) return null;
+    return safeDay(visible.value);
+  };
+  Share.getSelectedDay = function(fallback){
+    const d = Share.peekSelectedDay();
+    return d===null ? safeDay(fallback) : d;
+  };
+
+  // ---- QR (online image generator)
+  function setQRForVisible(){
+    const section = document.querySelector("section:not(.hidden)");
+    if(!section) return;
+    const img = section.querySelector(".qr-img");
+    const linkBox = section.querySelector(".qr-link");
+    const sel = section.querySelector(".share-day-select");
+    if(!img || !linkBox) return;
+    const p = State.currentPractice;
+    const payload = (State.sharedPayload && section.id==="shareView") ? State.sharedPayload : null;
+
+    let day = sel ? safeDay(sel.value) : 0;
+    let link = "-";
+    if(payload){
+      // already a shared link page, keep same url
+      link = window.location.href.split('#')[0] + '#share=' + window.location.hash.split('#share=')[1];
+    }else if(p){
+      link = Share.buildShareLink(p, day);
+    }else{
+      img.removeAttribute("src");
+      linkBox.textContent = "공유할 기록이 없습니다.";
+      return;
+    }
+    linkBox.textContent = link;
+    // Use api.qrserver.com (simple, stable). Encodes full share link.
+    const api = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(link);
+    img.src = api;
+  }
+
+  Share.refreshShareUI = function(){
+    // default select value on first display
+    const section = document.querySelector("section:not(.hidden)");
+    if(section){
+      const sel = section.querySelector(".share-day-select");
+      if(sel && sel.dataset && sel.dataset._inited !== "1"){
+        const def = safeDay(sel.dataset.default || 0);
+        sel.value = String(def);
+        sel.dataset._inited = "1";
+      }
+    }
+    // Update receipt preview to match selected day (subtitle/stamp/ritual)
+    try{
+      const p = State.currentPractice;
+      if(p){
+        const day = Share.getSelectedDay(0);
+        Flow.renderReceipt(p, day);
+      }
+    }catch(e){}
+    setQRForVisible();
+  };
+
+  // ---- Override receipt render: support day variants + new fields
+  const _renderReceipt = Flow.renderReceipt.bind(Flow);
+  Flow.renderReceipt = function(practice, day=0){
+    day = Share.getSelectedDay(day);
+    if(!practice) return;
+
+    // ensure quote/card exist
+    if(!practice.quote){ practice.quote = pickQuote(practice); }
+    if(!practice.card){ practice.card = pickCard(practice); }
+    if(!practice.series){ practice.series = { enabled:false, name:'' }; }
+
+    // call existing renderer first (fills mood/color/nature/action/date)
+    try{ _renderReceipt(practice); }catch(e){}
+
+    // update subtitle + stamp
+    const subtitle = day===7 ? "Day +7 인증" : (day===30 ? "Day +30 최종 인증" : "오늘의 환경 실천");
+    const subEl = document.querySelector("#day0Complete:not(.hidden) .receipt-subtitle") || document.querySelector("#receiptWrap .receipt-subtitle");
+    if(subEl) subEl.textContent = subtitle;
+    const stampEl = document.getElementById("rStamp");
+    if(stampEl){
+      stampEl.textContent = (day===7 ? "SEED" : (day===30 ? "ROOTED" : "START"));
+    }
+
+    // series
+    const s = getSeriesStatus(practice);
+    const seriesText = s ? `${s.name} · ${Math.min(s.pos,3)}/3` + (s.done ? " (루틴 완성!)" : "") : (practice.series?.enabled ? "시리즈 정보 없음" : "사용 안함");
+    const seriesEl = document.getElementById("rSeries");
+    if(seriesEl) seriesEl.textContent = seriesText;
+
+    // quote
+    const qEl = document.getElementById("rQuote");
+    if(qEl) qEl.textContent = practice.quote || "-";
+
+    // card
+    const ct = document.getElementById("rCardTitle");
+    const cm = document.getElementById("rCardMsg");
+    if(ct) ct.textContent = practice.card?.title || "-";
+    if(cm) cm.textContent = practice.card?.msg || "-";
+
+    // ritual summary depending on day
+    const rEl = document.getElementById("rRitual");
+    if(rEl){
+      let t = "-";
+      if(day===7 && practice.day7){
+        const c = practice.day7.checks;
+        if(c) t = `완료:${c.c1?'✓':'-'} · 변화:${c.c2?'✓':'-'} · 지속:${c.c3?'✓':'-'}`;
+        else t = "7일 인증 완료";
+      }else if(day===30 && practice.day30){
+        const c = practice.day30.checks;
+        if(c) t = `지속:${c.c1?'✓':'-'} · 습관화:${c.c2?'✓':'-'} · 영향:${c.c3?'✓':'-'}`;
+        else t = "30일 완주 인증 완료";
+      }else{
+        t = "Day0 · 시작";
+      }
+      rEl.textContent = t;
+    }
+  };
+
+  // ---- Override Day0 completion to include series + quote + card
+  Flow.completeDay0 = function(){
+    if(!State.selectedEmotion){ alert('오늘의 기분(감정)을 선택해주세요!'); return; }
+    if(!State.selectedColor){ alert('감정의 색을 선택해주세요!'); return; }
+    const nature = document.getElementById('inputNature').value.trim();
+    const action = document.getElementById('inputAction').value.trim();
+    if(!nature || !action){ alert('자연 관찰과 실천 내용을 모두 입력해주세요!'); return; }
+
+    const seriesEnabled = !!document.getElementById('seriesToggle')?.checked;
+    let seriesName = (document.getElementById('seriesName')?.value || '').trim();
+    if(seriesEnabled && !seriesName) seriesName = action.trim();
+
+    const now = new Date();
+    const practice = {
+      id: Date.now(),
+      mood: State.selectedEmotion,
+      color: State.selectedColor,
+      nature,
+      action,
+      startDate: now.toISOString(),
+      day7: null,
+      day30: null,
+      status: 'in-progress',
+      quote: null,
+      card: null,
+      series: { enabled: seriesEnabled, name: seriesName }
+    };
+    practice.quote = pickQuote(practice);
+    practice.card = pickCard(practice);
+
+    Data.upsert(practice);
+    State.currentPractice = practice;
+
+    Flow.renderReceipt(practice, 0);
+    Flow.updateCountdown(practice);
+
+    UI.toast('실천이 등록되었습니다! 그린영수증을 확인해보세요 🧾');
+    UI.show('day0Complete');
+  };
+
+  // ---- Override Day7/Day30 completion to store checks
+  Flow.completeDay7 = function(){
+    const p = State.currentPractice;
+    if(!p){ alert('실천을 선택해주세요.'); UI.showDashboard(); return; }
+    const c1 = document.getElementById('d7c1').checked;
+    const c2 = document.getElementById('d7c2').checked;
+    const c3 = document.getElementById('d7c3').checked;
+    const reflection = document.getElementById('d7Reflection').value.trim();
+    if(!c1 || !c2 || !c3){ alert('모든 체크 항목을 확인해주세요!'); return; }
+    if(!reflection){ alert('변화 기록을 작성해주세요!'); return; }
+    const photoFile = document.getElementById('photo7').files?.[0] || null;
+
+    const finalize = (photoData) => {
+      p.day7 = { date: new Date().toISOString(), checks:{c1,c2,c3}, reflection, photo: photoData || null };
+      Data.upsert(p);
+      State.currentPractice = p;
+      UI.show('day7Complete');
+    };
+    if(photoFile){
+      const reader = new FileReader();
+      reader.onload = (e)=> finalize(e.target.result);
+      reader.readAsDataURL(photoFile);
+    }else finalize(null);
+  };
+
+  Flow.completeDay30 = function(){
+    const p = State.currentPractice;
+    if(!p){ alert('실천을 선택해주세요.'); UI.showDashboard(); return; }
+    const c1 = document.getElementById('d30c1').checked;
+    const c2 = document.getElementById('d30c2').checked;
+    const c3 = document.getElementById('d30c3').checked;
+    const reflection = document.getElementById('d30Reflection').value.trim();
+    if(!c1 || !c2 || !c3){ alert('모든 체크 항목을 확인해주세요!'); return; }
+    if(!reflection){ alert('한 달 후기를 작성해주세요!'); return; }
+    const photoFile = document.getElementById('photo30').files?.[0] || null;
+
+    const finalize = (photoData) => {
+      p.day30 = { date: new Date().toISOString(), checks:{c1,c2,c3}, reflection, photo: photoData || null };
+      p.status = 'completed';
+      Data.upsert(p);
+      State.currentPractice = p;
+      UI.show('day30Complete');
+    };
+    if(photoFile){
+      const reader = new FileReader();
+      reader.onload = (e)=> finalize(e.target.result);
+      reader.readAsDataURL(photoFile);
+    }else finalize(null);
+  };
+
+  // ---- Extend share payload with quote/card/series/ritual summary (kept concise)
+  const _makePayload = Share.makePayload.bind(Share);
+  Share.makePayload = function(practice, day=0){
+    day = Share.getSelectedDay(day);
+    const payload = _makePayload(practice, day);
+    // Ensure quote/card exist
+    const quote = practice.quote || pickQuote(practice);
+    const card = practice.card || pickCard(practice);
+    const series = getSeriesStatus(practice);
+    payload.quote = quote;
+    payload.card = card;
+    payload.series = series ? { name: series.name, progress: `${Math.min(series.pos,3)}/3`, done: series.done } : null;
+    // Ritual (summary only)
+    if(day===7 && practice.day7){
+      payload.day7 = { date: practice.day7.date, checks: practice.day7.checks, reflection: clampText(practice.day7.reflection, 120) };
+    }
+    if(day===30 && practice.day30){
+      payload.day30 = { date: practice.day30.date, checks: practice.day30.checks, reflection: clampText(practice.day30.reflection, 120) };
+    }
+    return payload;
+  };
+
+  // ---- Share methods: always follow visible selection when present
+  const _getShareText = Share.getShareText.bind(Share);
+  Share.getShareText = function(day=0){
+    day = Share.getSelectedDay(day);
+    return _getShareText(day);
+  };
+  const _shareReceipt = Share.shareReceipt.bind(Share);
+  Share.shareReceipt = function(channel){
+    const p = State.currentPractice;
+    if(!p){ UI.toast('공유할 기록이 없습니다.'); return; }
+    const day = Share.getSelectedDay(0);
+    const link = Share.buildShareLink(p, day);
+    const text = Share.getShareText(day) + link;
+    Share.nativeShare({ title: 'RE:ESG 그린영수증', text, url: link });
+  };
+  Share.shareSummary = function(day){
+    const p = State.currentPractice;
+    if(!p){ UI.toast('공유할 기록이 없습니다.'); return; }
+    day = Share.getSelectedDay(day || 7);
+    const link = Share.buildShareLink(p, day);
+    const tag = day === 7 ? '🌟 7일 실천 완료' : (day===30 ? '🏆 30일 완주' : '🌱 실천 시작');
+    const text = `RE:ESG ${tag}\n\n실천: "${p.action}"\n기분: ${p.mood.emoji} ${p.mood.label}\n\n그린영수증 보기: ` + link;
+    Share.nativeShare({ title: 'RE:ESG 그린영수증', text, url: link });
+  };
+  Share.shareSMS = function(day){
+    const p = State.currentPractice;
+    if(!p){ UI.toast('공유할 기록이 없습니다.'); return; }
+    day = Share.getSelectedDay(day||0);
+    const link = Share.buildShareLink(p, day);
+    const body = encodeURIComponent(Share.getShareText(day) + link);
+    window.location.href = `sms:?&body=${body}`;
+  };
+  Share.copyLink = function(day){
+    const p = State.currentPractice;
+    if(!p){ UI.toast('복사할 기록이 없습니다.'); return; }
+    day = Share.getSelectedDay(day||0);
+    const link = Share.buildShareLink(p, day);
+    navigator.clipboard?.writeText(link).then(()=>UI.toast('링크를 복사했습니다.'), ()=>UI.toast('복사에 실패했습니다.'));
+  };
+  Share.downloadReceiptImage = async function(day=0){
+    const p = State.currentPractice;
+    if(!p){ UI.toast('저장할 기록이 없습니다.'); return; }
+    day = Share.getSelectedDay(day||0);
+    const canvas = await renderReceiptToCanvas(Share.makePayload(p, day));
+    canvas.toBlob((blob)=>{
+      if(!blob){ UI.toast('이미지 생성 실패'); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `RE_ESG_GREEN_RECEIPT_D${day}_${new Date().toISOString().slice(0,10)}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 3000);
+      UI.toast('영수증 이미지를 저장했습니다.');
+    }, 'image/png');
+  };
+  Share.shareAsFile = async function(day=0){
+    const p = State.currentPractice;
+    if(!p){ UI.toast('보낼 기록이 없습니다.'); return; }
+    day = Share.getSelectedDay(day||0);
+    const canvas = await renderReceiptToCanvas(Share.makePayload(p, day));
+    canvas.toBlob(async (blob)=>{
+      if(!blob){ UI.toast('이미지 생성 실패'); return; }
+      const file = new File([blob], `RE_ESG_GREEN_RECEIPT_D${day}.png`, {type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        await navigator.share({ title:'RE:ESG 그린영수증', files:[file], text:'RE:ESG 그린영수증' });
+      }else{
+        UI.toast('이 기기에서 파일 공유를 지원하지 않습니다. 이미지 저장을 사용해주세요.');
+      }
+    }, 'image/png');
+  };
+
+  // ---- Extend canvas receipt render to include quote/card/series/ritual and stamp
+  const _renderReceiptToCanvas = renderReceiptToCanvas;
+  renderReceiptToCanvas = async function(payload){
+    // call original renderer then add extras (simple overlay)
+    const canvas = await _renderReceiptToCanvas(payload);
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    // stamp
+    const day = safeDay(payload.day||0);
+    const stamp = (day===7 ? "SEED" : (day===30 ? "ROOTED" : "START"));
+    ctx.save();
+    ctx.fillStyle = "rgba(232,197,71,0.18)";
+    ctx.strokeStyle = "rgba(232,197,71,0.85)";
+    ctx.lineWidth = 4;
+    const w=210,h=56,x=W-70-w,y=70;
+    roundRect(ctx,x,y,w,h,28);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle="#2D5F4F";
+    ctx.font="900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText(stamp, x+w/2, y+38);
+    ctx.restore();
+
+    // Add extra rows at bottom area
+    const margin = 70;
+    const x0 = margin + 60;
+    const x1 = W - margin - 60;
+    let curY = H - 370; // bottom region
+    ctx.save();
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#7A8B82";
+    ctx.font = "800 26px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif";
+    ctx.fillText("오늘의 한 문장", x0, curY);
+    ctx.fillStyle = "#2D5F4F";
+    ctx.font = "900 28px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif";
+    curY += 44;
+    const quote = payload.quote || "-";
+    drawWrappedText(ctx, quote, x0, curY, x1-x0, 34, 3);
+    curY += 120;
+
+    ctx.fillStyle = "#7A8B82";
+    ctx.font = "800 26px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif";
+    ctx.fillText("오늘 추천 카드", x0, curY);
+    curY += 44;
+    ctx.fillStyle = "#2D5F4F";
+    ctx.font = "1000 30px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif";
+    const cardTitle = payload.card?.title || "-";
+    ctx.fillText(cardTitle, x0, curY);
+    curY += 40;
+    ctx.fillStyle = "#2C3E35";
+    ctx.font = "900 26px -apple-system, BlinkMacSystemFont, Segoe UI, Malgun Gothic, sans-serif";
+    const cardMsg = payload.card?.msg || "-";
+    drawWrappedText(ctx, cardMsg, x0, curY, x1-x0, 32, 3);
+    ctx.restore();
+    return canvas;
+  };
+
+  // helper: wrapped text draw
+  function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    const words = String(text||"").split(/\s+/);
+    let line = "";
+    let lineCount = 0;
+    for(let n=0;n<words.length;n++){
+      const test = line ? (line + " " + words[n]) : words[n];
+      const metrics = ctx.measureText(test);
+      if(metrics.width > maxWidth && line){
+        ctx.fillText(line, x, y);
+        y += lineHeight;
+        line = words[n];
+        lineCount++;
+        if(maxLines && lineCount >= maxLines) return;
+      }else{
+        line = test;
+      }
+    }
+    if(line && (!maxLines || lineCount < maxLines)){
+      ctx.fillText(line, x, y);
+    }
+  }
+
+  // ---- Export (print to PDF)
+  window.Export = {
+    async printReceipt(day){
+      const p = State.currentPractice;
+      if(!p){ UI.toast('인쇄할 기록이 없습니다.'); return; }
+      day = Share.getSelectedDay(day||0);
+      const canvas = await renderReceiptToCanvas(Share.makePayload(p, day));
+      const dataUrl = canvas.toDataURL("image/png");
+      const win = window.open("", "_blank");
+      if(!win){ UI.toast('팝업이 차단되었습니다.'); return; }
+      win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>RE:ESG Receipt</title>
+        <style>body{margin:0;padding:20px;font-family:sans-serif}img{max-width:100%;height:auto} .hint{font-size:12px;color:#666;margin:10px 0}</style>
+        </head><body>
+        <div class="hint">브라우저 인쇄 기능에서 ‘PDF로 저장’을 선택하세요.</div>
+        <img src="${dataUrl}" alt="receipt"/>
+        <script>setTimeout(()=>{window.print();}, 400);<\/script>
+        </body></html>`);
+      win.document.close();
+    },
+    async printAllReceipts(){
+      const list = Data.getAll();
+      if(list.length===0){ alert('저장된 실천이 없습니다.'); return; }
+      // Generate images sequentially
+      const imgs = [];
+      for(const p of list){
+        const day = p.day30 ? 30 : (p.day7 ? 7 : 0);
+        const canvas = await renderReceiptToCanvas(Share.makePayload(p, day));
+        imgs.push(canvas.toDataURL("image/png"));
+      }
+      const win = window.open("", "_blank");
+      if(!win){ UI.toast('팝업이 차단되었습니다.'); return; }
+      const blocks = imgs.map((src,i)=>`<div class="page"><img src="${src}" alt="receipt ${i+1}"/></div>`).join("");
+      win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>RE:ESG Receipts</title>
+        <style>
+          body{margin:0;padding:20px;font-family:sans-serif}
+          .hint{font-size:12px;color:#666;margin:10px 0}
+          .page{page-break-after:always;margin-bottom:18px}
+          img{max-width:100%;height:auto}
+          @media print{.hint{display:none} body{padding:0}}
+        </style>
+        </head><body>
+        <div class="hint">브라우저 인쇄 기능에서 ‘PDF로 저장’을 선택하세요.</div>
+        ${blocks}
+        <script>setTimeout(()=>{window.print();}, 600);<\/script>
+        </body></html>`);
+      win.document.close();
+    }
+  };
+
+  // ---- Extend CSV export with new columns
+  Data.exportCSV = function(){
+    const list = Data.getAll();
+    if(list.length === 0){ alert('저장된 실천이 없습니다.'); return; }
+
+    const headers = [
+      'id','시작일','실천내용','기분','기분이모지','색상명','색상HEX','자연관찰',
+      '오늘의한문장','추천카드_제목','추천카드_문장',
+      '시리즈사용','시리즈명','시리즈진행',
+      'Day+7완료','Day+7체크','Day+7후기',
+      'Day+30완료','Day+30체크','Day+30후기',
+      '상태'
+    ];
+
+    const rows = list.map(p=>{
+      if(!p.quote) p.quote = pickQuote(p);
+      if(!p.card) p.card = pickCard(p);
+      const s = getSeriesStatus(p);
+      const sProg = s ? `${Math.min(s.pos,3)}/3` : '';
+      const d7 = p.day7 ? '완료' : '미완료';
+      const d30 = p.day30 ? '완료' : '미완료';
+      const d7c = p.day7?.checks ? `완료:${p.day7.checks.c1?'Y':'N'}|변화:${p.day7.checks.c2?'Y':'N'}|지속:${p.day7.checks.c3?'Y':'N'}` : '';
+      const d30c = p.day30?.checks ? `지속:${p.day30.checks.c1?'Y':'N'}|습관화:${p.day30.checks.c2?'Y':'N'}|영향:${p.day30.checks.c3?'Y':'N'}` : '';
+      const status = p.status === 'completed' ? '완료' : '진행중';
+
+      const start = new Date(p.startDate).toLocaleString('ko-KR');
+      return [
+        p.id,
+        start,
+        csvSafe(p.action),
+        p.mood?.label || '',
+        p.mood?.emoji || '',
+        p.color?.name || '',
+        p.color?.hex || '',
+        csvSafe(p.nature || ''),
+        csvSafe(p.quote || ''),
+        csvSafe(p.card?.title || ''),
+        csvSafe(p.card?.msg || ''),
+        p.series?.enabled ? 'Y' : 'N',
+        csvSafe(p.series?.name || ''),
+        csvSafe(sProg),
+        d7,
+        csvSafe(d7c),
+        csvSafe(p.day7?.reflection || ''),
+        d30,
+        csvSafe(d30c),
+        csvSafe(p.day30?.reflection || ''),
+        status
+      ].join(',');
+    });
+
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `RE_ESG_실천기록_v23_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 3000);
+  };
+
+  // ---- Extend shared receipt rendering (if element ids exist)
+  const _renderSharedReceipt = window.renderSharedReceipt;
+  if(typeof _renderSharedReceipt === "function"){
+    window.renderSharedReceipt = function(payload){
+      _renderSharedReceipt(payload);
+      const day = safeDay(payload.day||0);
+      const stamp = document.getElementById("srStamp");
+      if(stamp) stamp.textContent = (day===7 ? "SEED" : (day===30 ? "ROOTED" : "START"));
+      if(document.getElementById("srSeries")){
+        const s = payload.series;
+        document.getElementById("srSeries").textContent = s ? `${s.name} · ${s.progress}${s.done?' (루틴 완성!)':''}` : "-";
+      }
+      if(document.getElementById("srQuote")) document.getElementById("srQuote").textContent = payload.quote || "-";
+      if(document.getElementById("srCardTitle")) document.getElementById("srCardTitle").textContent = payload.card?.title || "-";
+      if(document.getElementById("srCardMsg")) document.getElementById("srCardMsg").textContent = payload.card?.msg || "-";
+      if(document.getElementById("srCard")) document.getElementById("srCard").style.display="block";
+      if(document.getElementById("srRitual")){
+        let t = "-";
+        if(day===7 && payload.day7?.checks){
+          const c = payload.day7.checks;
+          t = `완료:${c.c1?'✓':'-'} · 변화:${c.c2?'✓':'-'} · 지속:${c.c3?'✓':'-'}`;
+        }else if(day===30 && payload.day30?.checks){
+          const c = payload.day30.checks;
+          t = `지속:${c.c1?'✓':'-'} · 습관화:${c.c2?'✓':'-'} · 영향:${c.c3?'✓':'-'}`;
+        }else t = "Day0 · 시작";
+        document.getElementById("srRitual").textContent = t;
+      }
+    };
+  }
+
+  // ---- Lock (PIN)
+  const LOCK_KEY_ENABLED = "re_esg_lock_enabled";
+  const LOCK_KEY_PINHASH = "re_esg_lock_pinhash";
+  window.Lock = {
+    isLocked: false,
+    isShareView(){
+      return window.location.hash && window.location.hash.startsWith("#share=");
+    },
+    get enabled(){ return localStorage.getItem(LOCK_KEY_ENABLED)==="1"; },
+    set enabled(v){ localStorage.setItem(LOCK_KEY_ENABLED, v? "1":"0"); },
+    get pinHash(){ return localStorage.getItem(LOCK_KEY_PINHASH) || ""; },
+    set pinHash(v){ localStorage.setItem(LOCK_KEY_PINHASH, v||""); },
+    hashPin(pin){ return String(fnv1a(String(pin))).padStart(10,"0"); },
+    applyFromSettings(){
+      const enabled = document.getElementById("lockEnabled")?.checked;
+      const p1 = document.getElementById("pinNew")?.value || "";
+      const p2 = document.getElementById("pinConfirm")?.value || "";
+      Lock.enabled = !!enabled;
+      if(p1 || p2){
+        if(!(p1.length===4 && /^\d{4}$/.test(p1))){ alert("PIN은 숫자 4자리로 입력해주세요."); return; }
+        if(p1 !== p2){ alert("PIN 확인이 일치하지 않습니다."); return; }
+        Lock.pinHash = Lock.hashPin(p1);
+        UI.toast("PIN이 설정되었습니다.");
+        document.getElementById("pinNew").value="";
+        document.getElementById("pinConfirm").value="";
+      }
+      UI.toast("잠금 설정이 적용되었습니다.");
+      Lock.enforceIfNeeded();
+    },
+    lockNow(){
+      if(Lock.isShareView()) return;
+      if(!Lock.enabled || !Lock.pinHash){ alert("잠금을 사용하려면 먼저 PIN을 설정하세요."); return; }
+      Lock.showOverlay();
+    },
+    showOverlay(){
+      if(Lock.isShareView()) return;
+      const o = document.getElementById("lockOverlay");
+      if(!o) return;
+      o.classList.remove("hidden");
+      Lock.isLocked = true;
+      const inp = document.getElementById("lockPinInput");
+      if(inp){ inp.value=""; setTimeout(()=>inp.focus(), 100); }
+    },
+    hideOverlay(){
+      const o = document.getElementById("lockOverlay");
+      if(!o) return;
+      o.classList.add("hidden");
+      Lock.isLocked = false;
+      const err = document.getElementById("lockError");
+      if(err) err.classList.add("hidden");
+    },
+    unlock(){
+      const inp = document.getElementById("lockPinInput");
+      const err = document.getElementById("lockError");
+      const val = (inp?.value || "").trim();
+      if(Lock.hashPin(val) === Lock.pinHash){
+        Lock.hideOverlay();
+      }else{
+        if(err) err.classList.remove("hidden");
+        if(inp){ inp.value=""; inp.focus(); }
+      }
+    },
+    cancel(){
+      // keep locked -> go dashboard (still blocked)
+      if(Lock.enabled && Lock.pinHash){
+        // do nothing; stay on overlay
+        return;
+      }else{
+        Lock.hideOverlay();
+      }
+    },
+    enforceIfNeeded(){
+      if(Lock.isShareView()) return; // allow recipients
+      if(Lock.enabled && Lock.pinHash){
+        // If not already in overlay, show it on first load and when enabled
+        if(!Lock.isLocked){
+          Lock.showOverlay();
+        }
+      }else{
+        Lock.hideOverlay();
+      }
+      // reflect setting UI
+      const chk = document.getElementById("lockEnabled");
+      if(chk) chk.checked = Lock.enabled;
+    },
+    init(){
+      // reflect setting UI
+      const chk = document.getElementById("lockEnabled");
+      if(chk) chk.checked = Lock.enabled;
+      // Enter key to unlock
+      const inp = document.getElementById("lockPinInput");
+      if(inp){
+        inp.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ Lock.unlock(); }});
+      }
+      Lock.enforceIfNeeded();
+    }
+  };
+
+  // ---- Hook UI.show to refresh share UI and lock
+  const __uiShow = UI.show.bind(UI);
+  UI.show = function(screen){
+    __uiShow(screen);
+    setTimeout(()=>{
+      try{ Share.refreshShareUI(); }catch(e){}
+      try{ Lock.enforceIfNeeded(); }catch(e){}
+    }, 0);
+  };
+
+  // ---- Init on load
+  const __origInit = window.initApp;
+  window.initApp = function(){
+    if(typeof __origInit === "function") __origInit();
+    setTimeout(()=>{
+      try{ Lock.init(); }catch(e){}
+      try{ Share.refreshShareUI(); }catch(e){}
+    }, 0);
+  };
+
+})();
+</script>
+
+<div aria-label="lock screen" class="lock-overlay hidden" id="lockOverlay">
+<div class="lock-card">
+<div class="lock-title">🔒 잠금 해제</div>
+<div class="lock-desc">PIN 4자리를 입력하세요</div>
+<input class="lock-input" id="lockPinInput" inputmode="numeric" maxlength="4" placeholder="••••" type="password"/>
+<button class="btn" onclick="Lock.unlock()">열기</button>
+<button class="btn btn-secondary" onclick="Lock.cancel()">취소</button>
+<div class="lock-error hidden" id="lockError">PIN이 올바르지 않습니다.</div>
+</div>
+</div>
+</body>
+</html>
